@@ -2,7 +2,69 @@
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  background-color: rgb(31, 30, 30);
+  color: white;
+}
+
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
 h1 {
   text-align: center;
   color: aquamarine;
+  font-size: 4rem;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+h3 {
+  margin: 10px;
+}
+
+.intro-paragraph {
+  font-size: 2rem;
+  margin: 0;
+  margin-bottom: 40px;
+}
+
+.intro-button {
+  all: unset;
+  font-size: 2rem;
+  border-radius: 10px;
+  outline: 1px solid red;
+  padding: 10px;
+  background-color: rgb(61, 61, 61);
+  color: white;
+  width: 193px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.game {
+  min-height: 100vh;
+  text-align: center;
+  margin: auto 30px;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 0px;
+}
+
+.game-li {
+  border: 2px solid red;
+  font-size: 1.2rem;
+  padding: 10px;
+  border-radius: 10px;
 }
