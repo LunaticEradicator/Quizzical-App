@@ -1,17 +1,25 @@
+import { useEffect } from 'react';
+
+export { useEffect } from 'react'
+
 export default function Game(props) {
     const incorrect = props.incorrect_answers;
     const correct = props.correct_answer;
 
     let options = [...incorrect, correct];
+    let styles = { backgroundColor: props.holdOption ? 'green' : '' }
 
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
+
+    // function shuffleArray(array) {
+    useEffect(() => {
+        for (let i = options.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+            [options[i], options[j]] = [options[j], options[i]];
         }
-        return array
-    }
-    shuffleArray(options);
+    }, [])
+    // return array
+    // }
+    // shuffleArray(options);
 
 
     return (
@@ -20,10 +28,10 @@ export default function Game(props) {
             <div className="gameQuestion">
                 <h3>{props.question}</h3>
                 <ul>
-                    <li className="game-li">{options[0]}</li>
-                    <li className="game-li">{options[1]}</li>
-                    <li className="game-li">{options[2]}</li>
-                    <li className="game-li">{options[3]}</li>
+                    <li style={styles} onClick={props.handleHoldOption} className="game-option">{options[0]}</li>
+                    <li className="game-option">{options[1]}</li>
+                    <li className="game-option">{options[2]}</li>
+                    <li className="game-option">{options[3]}</li>
                 </ul>
             </div>
         </div>
