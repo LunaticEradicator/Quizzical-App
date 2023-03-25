@@ -49,7 +49,7 @@ h3 {
 }
 
 .game {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   text-align: center;
   margin: auto 30px;
 }
