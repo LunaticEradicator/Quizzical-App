@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import React from 'react'
 
 export default function Game(props) {
     // console.log(props.on)
@@ -8,22 +9,13 @@ export default function Game(props) {
     let options = [...incorrect, correct];
 
     function styles(onValue) {
-        const style = { backgroundColor: onValue ? 'green' : '' }
+        // apply condition if each of the props.onValue is equals to true 
+        const style = {
+            backgroundColor: onValue ? 'olive' : '',
+            border: onValue ? 'red' : ''
+        }
         return style
     }
-
-    // const stylesOne = {
-    //     backgroundColor: props.onOne ? 'green' : ''
-    // }
-    // const stylesTwo = {
-    //     backgroundColor: props.onTwo ? 'green' : ''
-    // }
-    // const stylesThree = {
-    //     backgroundColor: props.onThree ? 'green' : ''
-    // }
-    // const stylesFour = {
-    //     backgroundColor: props.onFour ? 'green' : ''
-    // }
 
     useEffect(() => {
         for (let i = options.length - 1; i > 0; i--) {
@@ -38,12 +30,13 @@ export default function Game(props) {
             <div className="gameQuestion">
                 <h3>{props.question}</h3>
                 <ul>
-                    <li style={styles(props.isOnOne)} onClick={() => props.toggle(props.idOne)} className="game-option">{options[0]}</li>
-                    <li style={styles(props.isOnTwo)} onClick={() => props.toggle(props.idTwo)} className="game-option">{options[1]}</li>
-                    <li style={styles(props.isOnThree)} onClick={() => props.toggle(props.idThree)} className="game-option">{options[2]}</li>
-                    <li style={styles(props.isOnFour)} onClick={() => props.toggle(props.idFour)} className="game-option">{options[3]}</li>
+                    <li style={styles(props.isOptionOne)} onClick={() => props.toggle(props.optionOne, event, props.questionId)} className="game-option">{options[0]}</li>
+                    <li style={styles(props.isOptionTwo)} onClick={() => props.toggle(props.optionTwo, event, props.questionId)} className="game-option">{options[1]}</li>
+                    <li style={styles(props.isOptionThree)} onClick={() => props.toggle(props.optionThree, event, props.questionId)} className="game-option">{options[2]}</li>
+                    <li style={styles(props.isOptionFour)} onClick={() => props.toggle(props.optionFour, event, props.questionId)} className="game-option">{options[3]}</li>
                 </ul>
             </div>
+            <hr />
         </div>
     )
 }

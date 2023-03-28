@@ -1,83 +1,129 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
-import Menu from './Pages/Menu'
-import Game from './Pages/Game';
+
 import { nanoid } from 'nanoid'
 
+import Menu from './Pages/Menu'
+import Game from './Pages/Game';
+import CheckAnswer from './Pages/CheckAnswer';
 
-function App() {
-  const [apiCall, setApiCall] = useState([]);
+
+export default function App() {
+  const [quiz, setQuiz] = useState([]);
   const [isGameOn, setIsGameOn] = useState(false);
+  let questionIdIncrement = 1;
 
   useEffect(() => {
     async function fetchAPI() {
-      const res = await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
-      const data = await res.json();
-      // setApiCall(data.results[randomNumber()])
-      // console.log(data.results)
-      setApiCall(data.results)
-      setApiCall(prevApiCall => prevApiCall.map(item => {
+      const response = await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
+      const data = await response.json();
+
+      setQuiz(data.results) // [shows an array of five question]
+      setQuiz(prevApiCall => prevApiCall.map(item => { // map through each of the quiz and add new data to it [isOptionOne,optionOne,questionId]
         return (
           {
             ...item,
-            isOnOne: false, isOnTwo: false, isOnThree: false, isOnFour: false,
-            idOne: nanoid(), idTwo: nanoid(), idThree: nanoid(), idFour: nanoid()
+            isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: false,
+            optionOne: nanoid(), optionTwo: nanoid(), optionThree: nanoid(), optionFour: nanoid(),
+            questionId: questionIdIncrement++
           }
         )
       }))
     }
-    fetchAPI()
+
+    fetchAPI() // assign all this to a function since we use async await method
   }, [])
+  console.log(quiz)
 
-  console.log(apiCall)
-
-  const game = apiCall.map(item => {
-    // console.log(item.id)
+  const gameMenu = quiz.map(item => {
     return (
       <Game
         key={nanoid()}
-        // id={item.id}
-        // on={true}
-        // toggle={() => toggleHandle(item.id)}
-        toggle={toggleHandle}
+        toggle={toggleAndSaveOption}
         {...item}
       />
     )
   })
 
+  const [questionsArray, setQuestionsArr] = useState([
+    {
+      questionOne: '',
+      questionTwo: '',
+      questionThree: '',
+      questionFour: ''
+    }
+  ]);
+  console.log(questionsArray)
 
-  function changeScreen() {
-    setIsGameOn(prevIsGameOn => !prevIsGameOn)
+
+  function toggleAndSaveOption(optionId, event, questionId) {
     console.clear()
+    console.log(questionId)
 
-  }
 
+    let liTextContent = event.target.innerText; //get the textContent of the clicked item[option]
+    if (questionId === 1) {                     // Assign each question an ID to store each option separately
+      setQuestionsArr(prevArr => prevArr.map(question => {
+        return { ...question, questionOne: liTextContent }
+      }))
+    }
+    else if (questionId === 2) {
+      setQuestionsArr(prevArr => prevArr.map(question => {
+        return { ...question, questionTwo: liTextContent }
+      }))
+    }
+    else if (questionId === 3) {
+      setQuestionsArr(prevArr => prevArr.map(question => {
+        return { ...question, questionThree: liTextContent }
+      }))
+    }
+    else if (questionId === 4) {
+      setQuestionsArr(prevArr => prevArr.map(question => {
+        return { ...question, questionFour: liTextContent }
+      }))
+    }
+    else if (questionId === 5) {
+      setQuestionsArr(prevArr => prevArr.map(question => {
+        return { ...question, questionFive: liTextContent }
+      }))
+    }
 
-  function toggleHandle(id) {
-    console.clear()
-    // console.log(id)
-    setApiCall(prevApiCall => prevApiCall.map(item => {
-      // console.log(item.idOne)
-      // For each option we assign a id and check if that item id [item.id] matches the click element id [id]
-      // if so return every other value in state as before but change the isON state for the item clicked 
-      // and return every other element isON as false [so only one element can be selected]
+    setQuiz(prevApiCall => prevApiCall.map(option => {
+      // Toggle the option we selected through ID
       return (
-        item.idOne === id ? { ...item, isOnOne: !item.isOnOne, isOnTwo: false, isOnThree: false, isOnFour: false } : item &&
-          item.idTwo === id ? { ...item, isOnOne: false, isOnTwo: !item.isOnTwo, isOnThree: false, isOnFour: false } : item &&
-            item.idThree === id ? { ...item, isOnOne: false, isOnTwo: false, isOnThree: !item.isOnThree, isOnFour: false } : item &&
-              item.idFour === id ? { ...item, isOnOne: false, isOnTwo: false, isOnThree: false, isOnFour: !item.isOnFour } : item
+        option.optionOne === optionId ? { ...option, isOptionOne: !option.isOptionOne, isOptionTwo: false, isOptionThree: false, isOptionFour: false } : option &&
+          option.optionTwo === optionId ? { ...option, isOptionOne: false, isOptionTwo: !option.isOptionTwo, isOptionThree: false, isOptionFour: false } : option &&
+            option.optionThree === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: !option.isOptionThree, isOptionFour: false } : option &&
+              option.optionFour === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: !option.isOptionFour } : option
       )
     }))
   }
 
 
+  function changeScreen() {
+    setIsGameOn(prevIsGameOn => !prevIsGameOn)
+    console.clear()
+  }
+
+
+  // function checkAnswer(selectedOption) {
+  //   console.log(selectedOption)
+  //   // setApiCall(prevApiCall => prevApiCall.map(item => {
+  //   //   return (
+
+  //   //   )
+  //   // }))
+  // }
+
+
   return (
     <div className="App">
-      {isGameOn === false && <Menu onClick={() => changeScreen()} />}
-      {isGameOn === true && game}
+      {!isGameOn && <Menu onClick={() => changeScreen()} />}
+      {isGameOn && gameMenu}
+      {isGameOn && <CheckAnswer />}
     </div>
   )
 }
 
-export default App
 
 
