@@ -6,7 +6,5 @@ export default function CheckAnswer(props) {
     )
 }
 
-// when pressed
-// check if all answer are selected
-// display score
-// restart button
+// disable selecting option after game over
+// only press checkAnswer after all option are selecting

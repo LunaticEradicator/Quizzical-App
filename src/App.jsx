@@ -1,29 +1,21 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-
 import { nanoid } from 'nanoid'
-
 import Menu from './Pages/Menu'
 import Game from './Pages/Game';
 import CheckAnswer from './Pages/CheckAnswer';
 
+// const [score, setScore] = useState(0)
+// console.log(`Score = ${score}`);
 
 export default function App() {
-  console.clear()
+  // console.clear()
   const [quiz, setQuiz] = useState([]);
   const [isGameOn, setIsGameOn] = useState(false);
-  const [score, setScore] = useState(0)
-  console.log(`Score = ${score}`);
-
   let questionIdIncrement = 1;
-  let arrayIdIncrement = 1;
 
   const [questionsArray, setQuestionsArray] = useState([
-    { questionOneSelectedOption: '' },
-    { questionTwoSelectedOption: '' },
-    { questionThreeSelectedOption: '' },
-    { questionFourSelectedOption: '' },
-    { questionFiveSelectedOption: '' },
+    { isCheckAnswer: false },
   ]);
 
 
@@ -40,7 +32,9 @@ export default function App() {
             isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: false,
             optionOne: nanoid(), optionTwo: nanoid(), optionThree: nanoid(), optionFour: nanoid(),
             questionId: questionIdIncrement++,
-            // selectedOption: ''
+            selectedOption: '',
+            // isMarkOne: false, isMarkTwo: false, isMarkThree: false, isMarkFour: false,
+            optionIndex: randomUnique(4, 4)
           }
         )
       }))
@@ -48,34 +42,26 @@ export default function App() {
 
     fetchAPI() // assign all this to a function since we use async await method
   }, [])
+
+
   console.log(quiz)
-
-
-  useEffect(() => {
-    setQuestionsArray(prevArr => prevArr.map(question => {
-      return (
-        {
-          ...question,
-          id: arrayIdIncrement++,
-          isCheckAnswer: false,
-        }
-      )
-    }))
-  }, [])
-
   console.log(questionsArray)
 
-
+  const randomUnique = (range, count) => { // create an array of 4 unique random Number[which does not includes duplicates]
+    let num = new Set();
+    while (num.size < count) {
+      num.add(Math.floor(Math.random() * (range - 1 + 1)));
+    }
+    return [...num];
+  }
 
   const gameMenu = quiz.map(item => {
     return (
       <Game
+        {...item}
         key={nanoid()}
         toggle={toggleAndSaveOption}
-        {...item}
-        temp={quiz}
-      // questionsArray={mappedArray}
-      // isCheck={questionsArray[0].isCheckAnswer}
+        isCheck={questionsArray[0].isCheckAnswer}
       />
     )
   })
@@ -86,11 +72,18 @@ export default function App() {
     let liTextContent = event.target.innerText; //get the textContent of the clicked item[option]
 
 
-    // console.log(questionId)
-    setQuestionsArray(prevArr => prevArr.map(question => {
-      // console.log(question.id)
+    // setQuestionsArray(prevArr => prevArr.map(question => {
+    //   // console.log(question.id)
+    //   return (
+    //     question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
+    //   )
+    // }))
+
+    console.log(questionId)
+    setQuiz(prevArr => prevArr.map(question => {
+      console.log(question.questionId)
       return (
-        question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
+        question.questionId === questionId ? { ...question, selectedOption: liTextContent } : question
       )
     }))
 
@@ -155,12 +148,10 @@ export default function App() {
 
   function isCheckAnswer() {
     setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
-      // alert(item.isCheckAnswer)
       return (
         { ...item, isCheckAnswer: true }
       )
     }))
-    console.log(questionsArray)
   }
 
   function changeScreen() {
@@ -170,6 +161,7 @@ export default function App() {
 
   return (
     <div className="App">
+      {isGameOn && <h2>Select Your Answers</h2>}
       {!isGameOn && <Menu onClick={() => changeScreen()} />}
       {isGameOn && gameMenu}
       {isGameOn &&
