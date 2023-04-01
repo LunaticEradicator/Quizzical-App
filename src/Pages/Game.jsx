@@ -5,7 +5,6 @@ import React from 'react'
 export default function Game(props) {
     // console.clear()
     // console.log(props.selectedOption)
-
     const incorrect = props.incorrect_answers;
     const correct = props.correct_answer;
     let options = [correct, ...incorrect];
@@ -57,7 +56,6 @@ export default function Game(props) {
             return selectStyle(onValue) // normal selection
         }
     }
-
     return (
         <div className="game">
             <div className="gameQuestion">

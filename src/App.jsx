@@ -68,81 +68,84 @@ export default function App() {
 
 
   function toggleAndSaveOption(optionId, event, questionId) {
-    console.clear()
-    let liTextContent = event.target.innerText; //get the textContent of the clicked item[option]
+    if (questionsArray[0].isCheckAnswer === false) { //only select if the player haven't pressed isChecked
+      console.clear()
+      let liTextContent = event.target.innerText; //get the textContent of the clicked item[option]
 
 
-    // setQuestionsArray(prevArr => prevArr.map(question => {
-    //   // console.log(question.id)
-    //   return (
-    //     question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
-    //   )
-    // }))
+      // setQuestionsArray(prevArr => prevArr.map(question => {
+      //   // console.log(question.id)
+      //   return (
+      //     question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
+      //   )
+      // }))
 
-    console.log(questionId)
-    setQuiz(prevArr => prevArr.map(question => {
-      console.log(question.questionId)
-      return (
-        question.questionId === questionId ? { ...question, selectedOption: liTextContent } : question
-      )
-    }))
-
-
-    // else if (questionId === 1) {
-    // setQuestionsArray(prevArr => prevArr.map(question => {
-    //   console.log(question.id)
-    //   return (
-    //     question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
-    //   )
-    // }))
-    // }
-
-    // else if (questionId === 2) {
-    // setQuestionsArray(prevArr => prevArr.map(question => {
-    //   console.log(question.id)
-    //   return (
-    //     question.id === questionId ? { ...question, questionTwoSelectedOption: liTextContent } : question
-    //   )
-    // }))
-    // }
-
-    // else if (questionId === 3) {
-    //   setQuestionsArray(prevArr => prevArr.map(question => {
-    //     console.log(question.id)
-    //     return (
-    //       question.id === questionId ? { ...question, questionThreeSelectedOption: liTextContent } : question
-    //     )
-    //   }))
-    // }
-
-    // else if (questionId === 4) {
-    //   setQuestionsArray(prevArr => prevArr.map(question => {
-    //     console.log(question.id)
-    //     return (
-    //       question.id === questionId ? { ...question, questionFourSelectedOption: liTextContent } : question
-    //     )
-    //   }))
-    // }
-
-    // else if (questionId === 5) {
-    //   setQuestionsArray(prevArr => prevArr.map(question => {
-    //     console.log(question.id)
-    //     return (
-    //       question.id === questionId ? { ...question, questionFiveSelectedOption: liTextContent } : question
-    //     )
-    //   }))
-    // }
+      console.log(questionId)
+      setQuiz(prevArr => prevArr.map(question => {
+        console.log(question.questionId)
+        return (
+          question.questionId === questionId ? { ...question, selectedOption: liTextContent } : question
+        )
+      }))
 
 
-    setQuiz(prevApiCall => prevApiCall.map(option => {
-      // Toggle the OnValue when clicking through ID
-      return (
-        option.optionOne === optionId ? { ...option, isOptionOne: !option.isOptionOne, isOptionTwo: false, isOptionThree: false, isOptionFour: false } : option &&
-          option.optionTwo === optionId ? { ...option, isOptionOne: false, isOptionTwo: !option.isOptionTwo, isOptionThree: false, isOptionFour: false } : option &&
-            option.optionThree === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: !option.isOptionThree, isOptionFour: false } : option &&
-              option.optionFour === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: !option.isOptionFour } : option
-      )
-    }))
+      // else if (questionId === 1) {
+      // setQuestionsArray(prevArr => prevArr.map(question => {
+      //   console.log(question.id)
+      //   return (
+      //     question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
+      //   )
+      // }))
+      // }
+
+      // else if (questionId === 2) {
+      // setQuestionsArray(prevArr => prevArr.map(question => {
+      //   console.log(question.id)
+      //   return (
+      //     question.id === questionId ? { ...question, questionTwoSelectedOption: liTextContent } : question
+      //   )
+      // }))
+      // }
+
+      // else if (questionId === 3) {
+      //   setQuestionsArray(prevArr => prevArr.map(question => {
+      //     console.log(question.id)
+      //     return (
+      //       question.id === questionId ? { ...question, questionThreeSelectedOption: liTextContent } : question
+      //     )
+      //   }))
+      // }
+
+      // else if (questionId === 4) {
+      //   setQuestionsArray(prevArr => prevArr.map(question => {
+      //     console.log(question.id)
+      //     return (
+      //       question.id === questionId ? { ...question, questionFourSelectedOption: liTextContent } : question
+      //     )
+      //   }))
+      // }
+
+      // else if (questionId === 5) {
+      //   setQuestionsArray(prevArr => prevArr.map(question => {
+      //     console.log(question.id)
+      //     return (
+      //       question.id === questionId ? { ...question, questionFiveSelectedOption: liTextContent } : question
+      //     )
+      //   }))
+      // }
+
+
+      setQuiz(prevApiCall => prevApiCall.map(option => {
+        // Toggle the OnValue when clicking through ID
+        return (
+          option.optionOne === optionId ? { ...option, isOptionOne: !option.isOptionOne, isOptionTwo: false, isOptionThree: false, isOptionFour: false } : option &&
+            option.optionTwo === optionId ? { ...option, isOptionOne: false, isOptionTwo: !option.isOptionTwo, isOptionThree: false, isOptionFour: false } : option &&
+              option.optionThree === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: !option.isOptionThree, isOptionFour: false } : option &&
+                option.optionFour === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: !option.isOptionFour } : option
+        )
+      }))
+    }
+
   }
 
 
