@@ -34,7 +34,7 @@ export default function App() {
             questionId: questionIdIncrement++,
             selectedOption: '',
             // isMarkOne: false, isMarkTwo: false, isMarkThree: false, isMarkFour: false,
-            optionIndex: randomUnique(4, 4)
+            optionIndex: randomUnique(4, 4) // this gives a each question an array of four unique random number [which we give as the index for each option]
           }
         )
       }))
@@ -70,16 +70,9 @@ export default function App() {
   function toggleAndSaveOption(optionId, event, questionId) {
     if (questionsArray[0].isCheckAnswer === false) { //only select if the player haven't pressed isChecked
       console.clear()
+
+
       let liTextContent = event.target.innerText; //get the textContent of the clicked item[option]
-
-
-      // setQuestionsArray(prevArr => prevArr.map(question => {
-      //   // console.log(question.id)
-      //   return (
-      //     question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
-      //   )
-      // }))
-
       console.log(questionId)
       setQuiz(prevArr => prevArr.map(question => {
         console.log(question.questionId)
@@ -149,13 +142,28 @@ export default function App() {
   }
 
 
-  function isCheckAnswer() {
-    setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
-      return (
-        { ...item, isCheckAnswer: true }
-      )
-    }))
+  function isCheckAnswer() { // Only Change isCheckAnswer = true, if options for each question are selected
+    if (quiz.every(eachElement => eachElement.selectedOption !== '')) {
+      setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
+        return (
+          { ...item, isCheckAnswer: true }
+        )
+      }))
+      console.log('I am filled')
+    }
+    else {
+      alert('Please Selected all questions')
+    }
+
+    // if (quiz[0].selectedOption !== '') {
+    //   setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
+    //     return (
+    //       { ...item, isCheckAnswer: true }
+    //     )
+    //   }))
+    // }
   }
+
 
   function changeScreen() {
     console.clear()
@@ -171,36 +179,9 @@ export default function App() {
         < CheckAnswer
           key={nanoid()}
           isCheckAnswer={() => isCheckAnswer()}
-        // checkAnswer={() => checkAnswer()}
         />}
     </div>
   )
 }
-
-
-  // function checkForCorrectAnswer(index, questionNumber) {
-  //   if (quiz[index].correct_answer === questionNumber) {
-  //     console.log(` ${questionNumber} = ${quiz[index].correct_answer} `);
-  //     console.log('Correct Answer');
-  //     setScore(prevScore => prevScore + 1)
-  //     console.log(`---------------------------`);
-  //   }
-  //   else {
-  //     console.log(` ${questionNumber} != ${quiz[index].correct_answer} `);
-  //     console.log('Wrong Answer');
-  //     console.log(`---------------------------`);
-  //   }
-  // }
-
-
-  // function checkAnswer() {
-  //   console.clear()
-  //   console.log('Checking for answer')
-  //   checkForCorrectAnswer(0, questionsArray[0].questionOneSelectedOption)
-  //   checkForCorrectAnswer(1, questionsArray[0].questionTwoSelectedOption)
-  //   checkForCorrectAnswer(2, questionsArray[0].questionThreeSelectedOption)
-  //   checkForCorrectAnswer(3, questionsArray[0].questionFourSelectedOption)
-  //   checkForCorrectAnswer(4, questionsArray[0].questionFiveSelectedOption)
-  // }
 
 
