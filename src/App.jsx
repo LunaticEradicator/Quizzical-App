@@ -5,14 +5,14 @@ import Menu from './Pages/Menu'
 import Game from './Pages/Game';
 import CheckAnswer from './Pages/CheckAnswer';
 
-// const [score, setScore] = useState(0)
-// console.log(`Score = ${score}`);
+
 
 export default function App() {
   // console.clear()
   const [quiz, setQuiz] = useState([]);
   const [isGameOn, setIsGameOn] = useState(false);
   let questionIdIncrement = 1;
+
 
   const [questionsArray, setQuestionsArray] = useState([
     { isCheckAnswer: false },
@@ -43,7 +43,6 @@ export default function App() {
     fetchAPI() // assign all this to a function since we use async await method
   }, [])
 
-
   console.log(quiz)
   console.log(questionsArray)
 
@@ -66,29 +65,147 @@ export default function App() {
     )
   })
 
+  let score = 0
+  // const [score, setScore] = useState(scoreee);
+  const [options, setOptions] = useState([
+    {
+      optionOne: '',
+      optionTwo: '',
+      optionThree: '',
+      optionFour: '',
+      optionFive: '',
+    }
+  ]);
+
+
+  // if (isGameOn === true) {
+  //   if (options[0].optionOne === quiz[0].correct_answer) {
+  //     setScore(score + 1)
+  //   }
+  // }
+
+
 
   function toggleAndSaveOption(optionId, event, questionId) {
-    if (questionsArray[0].isCheckAnswer === false) { //only select if the player haven't pressed isChecked
-      console.clear()
+    if (questionsArray[0].isCheckAnswer === false) {  //only select if the player haven't checked the answer
+      // console.clear()
+      // console.log(questionId)
+      let liTextContent = event.target.innerText;   //get the textContent of the clicked option
 
-
-      let liTextContent = event.target.innerText; //get the textContent of the clicked item[option]
-      console.log(questionId)
       setQuiz(prevArr => prevArr.map(question => {
-        console.log(question.questionId)
         return (
           question.questionId === questionId ? { ...question, selectedOption: liTextContent } : question
         )
       }))
 
+      setOptions(prevOptions => prevOptions.map(question => {
+        return (
+          questionId === 1 ? { ...question, optionOne: liTextContent } : question &&
+            questionId === 2 ? { ...question, optionTwo: liTextContent } : question &&
+              questionId === 3 ? { ...question, optionThree: liTextContent } : question &&
+                questionId === 4 ? { ...question, optionFour: liTextContent } : question &&
+                  questionId === 5 ? { ...question, optionFive: liTextContent } : question
+        )
+      }))
 
-      // else if (questionId === 1) {
-      // setQuestionsArray(prevArr => prevArr.map(question => {
-      //   console.log(question.id)
-      //   return (
-      //     question.id === questionId ? { ...question, questionOneSelectedOption: liTextContent } : question
-      //   )
-      // }))
+
+      setQuiz(prevApiCall => prevApiCall.map(option => {
+        // Toggle the OnValue when clicking through ID
+        return (
+          option.optionOne === optionId ? { ...option, isOptionOne: !option.isOptionOne, isOptionTwo: false, isOptionThree: false, isOptionFour: false } : option &&
+            option.optionTwo === optionId ? { ...option, isOptionOne: false, isOptionTwo: !option.isOptionTwo, isOptionThree: false, isOptionFour: false } : option &&
+              option.optionThree === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: !option.isOptionThree, isOptionFour: false } : option &&
+                option.optionFour === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: !option.isOptionFour } : option
+        )
+      }))
+
+      console.log(`-----------------------------`)
+      console.log(options)
+      console.log(`-----------------------------`)
+
+      console.log(`-----------------------------!!!!!!!`)
+      console.log(options[0].optionOne)
+      console.log(quiz[0].correct_answer)
+      console.log(`-----------------------------!!!!!!!!!`)
+    }
+  }
+  console.log(score)
+
+  function checkOptions(optionNumber, index) {
+    if (optionNumber === quiz[index].correct_answer) {
+      score++
+    }
+  }
+
+  if (isGameOn === true) {
+    checkOptions(options[0].optionOne, 0)
+    checkOptions(options[0].optionTwo, 1)
+    checkOptions(options[0].optionThree, 2)
+    checkOptions(options[0].optionFour, 3)
+    checkOptions(options[0].optionFive, 4)
+    // if (options[0].optionOne === quiz[0].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionTwo === quiz[1].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionThree === quiz[2].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionFour === quiz[3].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionFive === quiz[4].correct_answer) {
+    //   score++
+    // }
+  }
+  console.log(score)
+
+  function isCheckAnswer() { // Only Change isCheckAnswer to be true, if options for each question are selected
+    if (quiz.every(eachElement => eachElement.selectedOption !== '')) {
+      setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
+        return (
+          { ...item, isCheckAnswer: true }
+        )
+      }))
+      console.log('Option for Each Question Selected')
+    }
+    else {
+      alert('Select Options for all the question')
+    }
+
+    // if (quiz[0].selectedOption !== '') {
+    //   setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
+    //     return (
+    //       { ...item, isCheckAnswer: true }
+    //     )
+    //   }))
+    // }
+  }
+
+
+  function changeScreen() {
+    console.clear()
+    setIsGameOn(prevIsGameOn => !prevIsGameOn)
+  }
+
+  return (
+    <div className="App">
+      {isGameOn && <h2>Select Your Answers</h2>}
+      {!isGameOn && <Menu onClick={() => changeScreen()} />}
+      {isGameOn && gameMenu}
+      {isGameOn &&
+        < CheckAnswer
+          key={nanoid()}
+          toggleCheckAnswer={() => isCheckAnswer()}
+          isCheckValue={questionsArray[0].isCheckAnswer}
+        />}
+      <h2>Score:{score} </h2>
+    </div>
+  )
+}
+
+
       // }
 
       // else if (questionId === 2) {
@@ -126,62 +243,3 @@ export default function App() {
       //     )
       //   }))
       // }
-
-
-      setQuiz(prevApiCall => prevApiCall.map(option => {
-        // Toggle the OnValue when clicking through ID
-        return (
-          option.optionOne === optionId ? { ...option, isOptionOne: !option.isOptionOne, isOptionTwo: false, isOptionThree: false, isOptionFour: false } : option &&
-            option.optionTwo === optionId ? { ...option, isOptionOne: false, isOptionTwo: !option.isOptionTwo, isOptionThree: false, isOptionFour: false } : option &&
-              option.optionThree === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: !option.isOptionThree, isOptionFour: false } : option &&
-                option.optionFour === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: !option.isOptionFour } : option
-        )
-      }))
-    }
-
-  }
-
-
-  function isCheckAnswer() { // Only Change isCheckAnswer = true, if options for each question are selected
-    if (quiz.every(eachElement => eachElement.selectedOption !== '')) {
-      setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
-        return (
-          { ...item, isCheckAnswer: true }
-        )
-      }))
-      console.log('I am filled')
-    }
-    else {
-      alert('Please Selected all questions')
-    }
-
-    // if (quiz[0].selectedOption !== '') {
-    //   setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
-    //     return (
-    //       { ...item, isCheckAnswer: true }
-    //     )
-    //   }))
-    // }
-  }
-
-
-  function changeScreen() {
-    console.clear()
-    setIsGameOn(prevIsGameOn => !prevIsGameOn)
-  }
-
-  return (
-    <div className="App">
-      {isGameOn && <h2>Select Your Answers</h2>}
-      {!isGameOn && <Menu onClick={() => changeScreen()} />}
-      {isGameOn && gameMenu}
-      {isGameOn &&
-        < CheckAnswer
-          key={nanoid()}
-          isCheckAnswer={() => isCheckAnswer()}
-        />}
-    </div>
-  )
-}
-
-

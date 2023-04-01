@@ -6,14 +6,11 @@ export default function Game(props) {
     // console.clear()
     const incorrect = props.incorrect_answers;
     const correct = props.correct_answer;
-    let options = [correct, ...incorrect];
-
-    const [option, setOption] = useState(options)
+    let allOptions = [correct, ...incorrect];
+    const [option, setOption] = useState(allOptions)
 
     // console.log(`------------------------------------------`)
-    // console.log(props.selectedOption)
-
-    // console.log(props.correct_answer)
+    console.log(props.correct_answer)
     // console.log(`------------------------------------------`)
 
     function selectionStyle(onValue) {
@@ -41,11 +38,13 @@ export default function Game(props) {
     }
 
     function styleConditions(onValue, index) { //if onValue is true 
-        if (option[index] === props.correct_answer && props.isCheck && props.selectedOption !== "") { // always show the correct option 
+
+        if (option[index] === props.correct_answer && props.isCheck && props.selectedOption !== "") { // always show the correct option
             return showAllAnswers
         }
         else if (props.selectedOption === props.correct_answer && props.isCheck) { // if selected option is correct
             return correctAnswerStyle(onValue)
+
         }
         else if (props.selectedOption !== props.correct_answer && props.isCheck) { // if selected option is wrong 
             return wrongAnswerStyle(onValue)
@@ -54,6 +53,7 @@ export default function Game(props) {
             return selectionStyle(onValue) // normal selection
         }
     }
+
     return (
         <div className="game">
             <div className="gameQuestion">

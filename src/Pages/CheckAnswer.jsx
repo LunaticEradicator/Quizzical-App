@@ -1,10 +1,12 @@
 export default function CheckAnswer(props) {
+    // console.log(props)
     return (
         <div className="checkAnswer-Div">
-            <button onClick={props.isCheckAnswer} className='checkAnswer-Btn'>Check Answer</button>
+            <button onClick={props.toggleCheckAnswer} className='checkAnswer-Btn'>{props.isCheckValue ? 'Try Again' : 'Check Answers'}</button>
         </div>
     )
 }
 
-// disable selecting option after game over
-// only press checkAnswer after all option are selecting
+
+// change checkAnswer to Retry
+// display Score
