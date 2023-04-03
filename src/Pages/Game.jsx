@@ -3,14 +3,36 @@ import React from 'react'
 
 
 export default function Game(props) {
+    var decodeEntities = (function () {
+        // this prevents any overhead from creating the object each time
+        var element = document.createElement('div');
+
+        function decodeHTMLEntities(str) {
+            if (str && typeof str === 'string') {
+                // strip script/html tags
+                str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+                str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+                element.innerHTML = str;
+                str = element.textContent;
+                element.textContent = '';
+            }
+
+            return str;
+        }
+
+        return decodeHTMLEntities;
+    })(); // used to escape HTML entities [' "" ]
+
     // console.clear()
-    const incorrect = props.incorrect_answers;
-    const correct = props.correct_answer;
+    const incorrect = decodeEntities(props.incorrect_answers);
+    const correct = decodeEntities(props.correct_answer);
     let allOptions = [correct, ...incorrect];
     const [option, setOption] = useState(allOptions)
 
     // console.log(`------------------------------------------`)
     console.log(props.correct_answer)
+    console.log(incorrect.toString())
+    // console.log(allOptions)
     // console.log(`------------------------------------------`)
 
     function selectionStyle(onValue) {
@@ -54,10 +76,11 @@ export default function Game(props) {
         }
     }
 
+
     return (
         <div className="game">
             <div className="gameQuestion">
-                <h3>{props.question}</h3>
+                <h3>{decodeEntities(props.question)}</h3>
                 <ul>
                     <li style={styleConditions(props.isOptionOne, props.optionIndex[0])} onClick={() => props.toggle(props.optionOne, event, props.questionId)} className="game-option">{option[props.optionIndex[0]]}</li>
                     <li style={styleConditions(props.isOptionTwo, props.optionIndex[1])} onClick={() => props.toggle(props.optionTwo, event, props.questionId)} className="game-option">{option[props.optionIndex[1]]}</li>

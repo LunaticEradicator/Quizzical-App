@@ -9,15 +9,14 @@ import CheckAnswer from './Pages/CheckAnswer';
 
 export default function App() {
   // console.clear()
-  const [quiz, setQuiz] = useState([]);
+  let questionIdIncrement = 1;
+  let score = 0
   const [ApiLoading, setApiLoading] = useState(false);
+  const [quiz, setQuiz] = useState([]);
   const [isGameOn, setIsGameOn] = useState(false);
   const [isCheck, setIsCheck] = useState([
     { isCheckAnswer: false },
   ]);
-
-  let questionIdIncrement = 1;
-  let score = 0
   const [options, setOptions] = useState([ //storing each selected option to an array to check score
     {
       optionOne: '',
@@ -27,11 +26,33 @@ export default function App() {
       optionFive: '',
     }
   ]);
+  const [isGameOver, setIsGameOver] = useState(false)
+
+  function restartGame() {
+    setIsGameOver(false);
+    questionIdIncrement = 1;
+    score = 0
+    setIsCheck(prevIsCheck => prevIsCheck.map(item => {
+      return { isCheckAnswer: false }
+    }))
+    // setOptions(prevIsCheck => {
+    //   return (
+    //     {
+    //       optionOne: '',
+    //       optionTwo: '',
+    //       optionThree: '',
+    //       optionFour: '',
+    //       optionFive: '',
+    //     }
+    //   )
+    // })
+  }
 
   useEffect(() => {
     async function fetchAPI() {
       const response = await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
       const data = await response.json();
+
 
       setQuiz(data.results) // [shows an array of five question]
       setQuiz(prevApiCall => prevApiCall.map(item => { // map through each of the quiz and add new data to it [isOptionOne,optionOne,questionId]
@@ -48,15 +69,80 @@ export default function App() {
         )
       }))
     }
+    restartGame()
     fetchAPI() // assign all this to a function since we use async await method
-  }, [])
-
+  }, [isGameOver])
 
   useEffect(() => {
     if (quiz.length !== 0) {
       setApiLoading(true);
     }
-  }, [quiz])
+  }, [quiz]) // checking if quiz is not empty 
+
+  console.log(ApiLoading)
+  console.log(quiz)
+  console.log(score)
+  console.log(options)
+  console.log(quiz.length)
+  console.log(isCheck)
+  console.log(isCheck[0].isCheckAnswer)
+  console.log(isGameOver)
+
+
+
+  const randomUnique = (range, count) => { // create an array of 4 unique random Number[which does not includes duplicates]
+    let num = new Set();
+    while (num.size < count) {
+      num.add(Math.floor(Math.random() * (range - 1 + 1)));
+    }
+    return [...num];
+  }
+
+  const gameMenu = quiz.map(item => {
+    return (
+      <Game
+        {...item}
+        key={nanoid()}
+        toggle={toggleAndSaveOption}
+        isCheck={isCheck[0].isCheckAnswer}
+      />
+    )
+  })
+
+
+  function toggleAndSaveOption(optionId, event, questionId) {
+    if (isCheck[0].isCheckAnswer === false) {  //only select if the player haven't checked the answer
+      // console.clear()
+      // console.log(questionId)
+      let liTextContent = event.target.innerText;   //get the textContent of the clicked option
+
+      setQuiz(prevArr => prevArr.map(question => {
+        return (
+          question.questionId === questionId ? { ...question, selectedOption: liTextContent } : question
+        )
+      }))
+
+      setOptions(prevOptions => prevOptions.map(question => {
+        return (
+          questionId === 1 ? { ...question, optionOne: liTextContent } : question &&
+            questionId === 2 ? { ...question, optionTwo: liTextContent } : question &&
+              questionId === 3 ? { ...question, optionThree: liTextContent } : question &&
+                questionId === 4 ? { ...question, optionFour: liTextContent } : question &&
+                  questionId === 5 ? { ...question, optionFive: liTextContent } : question
+        )
+      }))
+
+      setQuiz(prevApiCall => prevApiCall.map(option => {
+        // Toggle the OnValue when clicking through ID
+        return (
+          option.optionOne === optionId ? { ...option, isOptionOne: !option.isOptionOne, isOptionTwo: false, isOptionThree: false, isOptionFour: false } : option &&
+            option.optionTwo === optionId ? { ...option, isOptionOne: false, isOptionTwo: !option.isOptionTwo, isOptionThree: false, isOptionFour: false } : option &&
+              option.optionThree === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: !option.isOptionThree, isOptionFour: false } : option &&
+                option.optionFour === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: !option.isOptionFour } : option
+        )
+      }))
+    }
+  }
 
 
   function checkScore(optionNumber, index) {
@@ -89,90 +175,18 @@ export default function App() {
     //   score++
     // }
   }
-  console.log(score)
 
-
-  console.log(ApiLoading)
-  console.log(quiz)
-  console.log(quiz.length)
-  console.log(isCheck)
-
-  const randomUnique = (range, count) => { // create an array of 4 unique random Number[which does not includes duplicates]
-    let num = new Set();
-    while (num.size < count) {
-      num.add(Math.floor(Math.random() * (range - 1 + 1)));
-    }
-    return [...num];
-  }
-
-  const gameMenu = quiz.map(item => {
-    return (
-      <Game
-        {...item}
-        key={nanoid()}
-        toggle={toggleAndSaveOption}
-        isCheck={isCheck[0].isCheckAnswer}
-      />
-    )
-  })
-
-
-
-
-  function toggleAndSaveOption(optionId, event, questionId) {
-    if (isCheck[0].isCheckAnswer === false) {  //only select if the player haven't checked the answer
-      // console.clear()
-      // console.log(questionId)
-      let liTextContent = event.target.innerText;   //get the textContent of the clicked option
-
-      setQuiz(prevArr => prevArr.map(question => {
-        return (
-          question.questionId === questionId ? { ...question, selectedOption: liTextContent } : question
-        )
-      }))
-
-      setOptions(prevOptions => prevOptions.map(question => {
-        return (
-          questionId === 1 ? { ...question, optionOne: liTextContent } : question &&
-            questionId === 2 ? { ...question, optionTwo: liTextContent } : question &&
-              questionId === 3 ? { ...question, optionThree: liTextContent } : question &&
-                questionId === 4 ? { ...question, optionFour: liTextContent } : question &&
-                  questionId === 5 ? { ...question, optionFive: liTextContent } : question
-        )
-      }))
-
-
-      setQuiz(prevApiCall => prevApiCall.map(option => {
-        // Toggle the OnValue when clicking through ID
-        return (
-          option.optionOne === optionId ? { ...option, isOptionOne: !option.isOptionOne, isOptionTwo: false, isOptionThree: false, isOptionFour: false } : option &&
-            option.optionTwo === optionId ? { ...option, isOptionOne: false, isOptionTwo: !option.isOptionTwo, isOptionThree: false, isOptionFour: false } : option &&
-              option.optionThree === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: !option.isOptionThree, isOptionFour: false } : option &&
-                option.optionFour === optionId ? { ...option, isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: !option.isOptionFour } : option
-        )
-      }))
-
-      console.log(`-----------------------------`)
-      console.log(options)
-      console.log(`-----------------------------`)
-
-      console.log(`-----------------------------!!!!!!!`)
-      console.log(options[0].optionOne)
-      console.log(quiz[0].correct_answer)
-      console.log(`-----------------------------!!!!!!!!!`)
-    }
-  }
-
-
-
-  function isCheckAnswer() { // Only Change isCheckAnswer to be true, if options for each question are selected
+  function isCheckAnswer(event) { // Only toggle, if options for each question are selected
+    console.log(event.target.textContent)
     if (quiz.every(eachElement => eachElement.selectedOption !== '')) {
       setIsCheck(prevQuestionArray => prevQuestionArray.map(item => {
         return (
           { ...item, isCheckAnswer: true }
         )
       }))
-      console.log('Option for Each Question Selected')
+      if (event.target.textContent === 'Try Again') {
+        setIsGameOver(true);
+      }
     }
     else {
       alert('Select Options for all the question')
@@ -187,7 +201,6 @@ export default function App() {
     // }
   }
 
-
   function changeScreen() {
     console.clear()
     setIsGameOn(prevIsGameOn => !prevIsGameOn)
@@ -195,9 +208,11 @@ export default function App() {
 
   return ApiLoading === false
     ?
-    (<div className='loadingApi'>  Please Wait.
+    (<div className='loadingApi'>
+      Fetching data ....
       <br />
-      Fetching data ....</div >)
+      Please Wait.
+    </div >)
     :
     (<div className="App">
       {isGameOn && <h2>Select Your Answers</h2>}
@@ -206,11 +221,12 @@ export default function App() {
       {isGameOn &&
         < CheckAnswer
           key={nanoid()}
-          toggleCheckAnswer={() => isCheckAnswer()}
+          toggleCheckAnswer={() => isCheckAnswer(event)}
           isCheckValue={isCheck[0].isCheckAnswer}
+          isGameOver={isGameOver}
         />}
-      {/* {isCheck[0].isCheckAnswer && <h2>Score:{score} </h2>} */}
-      <h2>Score:{score} </h2>
+      {isCheck[0].isCheckAnswer && <h2>You Scored {score} / 5 </h2>}
+      {/* <h2>You Scored {score} / 5 </h2> */}
     </div>
     )
 }

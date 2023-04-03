@@ -7,6 +7,4 @@ export default function CheckAnswer(props) {
     )
 }
 
-
-// change checkAnswer to Retry
-// display Score
+// restart functionality
