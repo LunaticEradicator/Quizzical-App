@@ -10,14 +10,23 @@ import CheckAnswer from './Pages/CheckAnswer';
 export default function App() {
   // console.clear()
   const [quiz, setQuiz] = useState([]);
+  const [ApiLoading, setApiLoading] = useState(false);
   const [isGameOn, setIsGameOn] = useState(false);
-  let questionIdIncrement = 1;
-
-
-  const [questionsArray, setQuestionsArray] = useState([
+  const [isCheck, setIsCheck] = useState([
     { isCheckAnswer: false },
   ]);
 
+  let questionIdIncrement = 1;
+  let score = 0
+  const [options, setOptions] = useState([ //storing each selected option to an array to check score
+    {
+      optionOne: '',
+      optionTwo: '',
+      optionThree: '',
+      optionFour: '',
+      optionFive: '',
+    }
+  ]);
 
   useEffect(() => {
     async function fetchAPI() {
@@ -39,12 +48,54 @@ export default function App() {
         )
       }))
     }
-
     fetchAPI() // assign all this to a function since we use async await method
   }, [])
 
+
+  useEffect(() => {
+    if (quiz.length !== 0) {
+      setApiLoading(true);
+    }
+  }, [quiz])
+
+
+  function checkScore(optionNumber, index) {
+    if (optionNumber === quiz[index].correct_answer) {
+      score++
+    }
+  }
+
+  if (ApiLoading) {
+    // at first the api calls an empty string which cause error,
+    // to prevent this we only render checkScore, if we get the api data []
+    checkScore(options[0].optionOne, 0)
+    checkScore(options[0].optionTwo, 1)
+    checkScore(options[0].optionThree, 2)
+    checkScore(options[0].optionFour, 3)
+    checkScore(options[0].optionFive, 4)
+    // if (options[0].optionOne === quiz[0].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionTwo === quiz[1].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionThree === quiz[2].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionFour === quiz[3].correct_answer) {
+    //   score++
+    // }
+    // if (options[0].optionFive === quiz[4].correct_answer) {
+    //   score++
+    // }
+  }
+  console.log(score)
+
+
+  console.log(ApiLoading)
   console.log(quiz)
-  console.log(questionsArray)
+  console.log(quiz.length)
+  console.log(isCheck)
 
   const randomUnique = (range, count) => { // create an array of 4 unique random Number[which does not includes duplicates]
     let num = new Set();
@@ -60,34 +111,16 @@ export default function App() {
         {...item}
         key={nanoid()}
         toggle={toggleAndSaveOption}
-        isCheck={questionsArray[0].isCheckAnswer}
+        isCheck={isCheck[0].isCheckAnswer}
       />
     )
   })
 
-  let score = 0
-  // const [score, setScore] = useState(scoreee);
-  const [options, setOptions] = useState([
-    {
-      optionOne: '',
-      optionTwo: '',
-      optionThree: '',
-      optionFour: '',
-      optionFive: '',
-    }
-  ]);
-
-
-  // if (isGameOn === true) {
-  //   if (options[0].optionOne === quiz[0].correct_answer) {
-  //     setScore(score + 1)
-  //   }
-  // }
 
 
 
   function toggleAndSaveOption(optionId, event, questionId) {
-    if (questionsArray[0].isCheckAnswer === false) {  //only select if the player haven't checked the answer
+    if (isCheck[0].isCheckAnswer === false) {  //only select if the player haven't checked the answer
       // console.clear()
       // console.log(questionId)
       let liTextContent = event.target.innerText;   //get the textContent of the clicked option
@@ -129,41 +162,12 @@ export default function App() {
       console.log(`-----------------------------!!!!!!!!!`)
     }
   }
-  console.log(score)
 
-  function checkOptions(optionNumber, index) {
-    if (optionNumber === quiz[index].correct_answer) {
-      score++
-    }
-  }
 
-  if (isGameOn === true) {
-    checkOptions(options[0].optionOne, 0)
-    checkOptions(options[0].optionTwo, 1)
-    checkOptions(options[0].optionThree, 2)
-    checkOptions(options[0].optionFour, 3)
-    checkOptions(options[0].optionFive, 4)
-    // if (options[0].optionOne === quiz[0].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionTwo === quiz[1].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionThree === quiz[2].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionFour === quiz[3].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionFive === quiz[4].correct_answer) {
-    //   score++
-    // }
-  }
-  console.log(score)
 
   function isCheckAnswer() { // Only Change isCheckAnswer to be true, if options for each question are selected
     if (quiz.every(eachElement => eachElement.selectedOption !== '')) {
-      setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
+      setIsCheck(prevQuestionArray => prevQuestionArray.map(item => {
         return (
           { ...item, isCheckAnswer: true }
         )
@@ -189,8 +193,13 @@ export default function App() {
     setIsGameOn(prevIsGameOn => !prevIsGameOn)
   }
 
-  return (
-    <div className="App">
+  return ApiLoading === false
+    ?
+    (<div className='loadingApi'>  Please Wait.
+      <br />
+      Fetching data ....</div >)
+    :
+    (<div className="App">
       {isGameOn && <h2>Select Your Answers</h2>}
       {!isGameOn && <Menu onClick={() => changeScreen()} />}
       {isGameOn && gameMenu}
@@ -198,18 +207,19 @@ export default function App() {
         < CheckAnswer
           key={nanoid()}
           toggleCheckAnswer={() => isCheckAnswer()}
-          isCheckValue={questionsArray[0].isCheckAnswer}
+          isCheckValue={isCheck[0].isCheckAnswer}
         />}
+      {/* {isCheck[0].isCheckAnswer && <h2>Score:{score} </h2>} */}
       <h2>Score:{score} </h2>
     </div>
-  )
+    )
 }
 
 
       // }
 
       // else if (questionId === 2) {
-      // setQuestionsArray(prevArr => prevArr.map(question => {
+      // setIsCheck(prevArr => prevArr.map(question => {
       //   console.log(question.id)
       //   return (
       //     question.id === questionId ? { ...question, questionTwoSelectedOption: liTextContent } : question
@@ -218,7 +228,7 @@ export default function App() {
       // }
 
       // else if (questionId === 3) {
-      //   setQuestionsArray(prevArr => prevArr.map(question => {
+      //   setIsCheck(prevArr => prevArr.map(question => {
       //     console.log(question.id)
       //     return (
       //       question.id === questionId ? { ...question, questionThreeSelectedOption: liTextContent } : question
@@ -227,7 +237,7 @@ export default function App() {
       // }
 
       // else if (questionId === 4) {
-      //   setQuestionsArray(prevArr => prevArr.map(question => {
+      //   setIsCheck(prevArr => prevArr.map(question => {
       //     console.log(question.id)
       //     return (
       //       question.id === questionId ? { ...question, questionFourSelectedOption: liTextContent } : question
@@ -236,7 +246,7 @@ export default function App() {
       // }
 
       // else if (questionId === 5) {
-      //   setQuestionsArray(prevArr => prevArr.map(question => {
+      //   setIsCheck(prevArr => prevArr.map(question => {
       //     console.log(question.id)
       //     return (
       //       question.id === questionId ? { ...question, questionFiveSelectedOption: liTextContent } : question
