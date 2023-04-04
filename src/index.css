@@ -1,5 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Itim&family=Josefin+Sans&family=Montserrat&family=Quicksand&display=swap');
+
+:root {
+  --hover-Color: rgb(216, 215, 215);
+  --font-color: aquamarine;
+}
+
 * {
   box-sizing: border-box;
+  font-family: 'Itim', cursive;
+  font-family: 'Josefin Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  font-family: 'Quicksand', sans-serif;
 }
 
 body {
@@ -8,12 +19,43 @@ body {
   color: white;
 }
 
+img {
+  max-width: 40px;
+}
+
 #root {
   min-height: 100vh;
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; */
+}
+
+
+h1 {
+  text-align: center;
+  color: var(--font-color);
+  font-size: 4rem;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin: 0;
+}
+
+.scoreUI {
+  margin: 0;
+  margin-top: 10px;
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin: 10px;
+}
+
+hr {
+  background-color: azure;
+  opacity: 0.1;
 }
 
 .intro {
@@ -22,24 +64,6 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-}
-
-h1 {
-  text-align: center;
-  color: aquamarine;
-  font-size: 4rem;
-  margin: 0;
-  margin-bottom: 10px;
-}
-
-h2 {
-  font-size: 2rem;
-  text-align: center;
-}
-
-h3 {
-  font-size: 1.5rem;
-  margin: 10px;
 }
 
 .intro-paragraph {
@@ -52,7 +76,7 @@ h3 {
   all: unset;
   font-size: 2rem;
   border-radius: 10px;
-  outline: 1px solid red;
+  outline: 1px solid var(--font-color);
   padding: 10px;
   background-color: rgb(61, 61, 61);
   color: white;
@@ -61,15 +85,18 @@ h3 {
   cursor: pointer;
 }
 
-
 .game {
-  /* min-height: 100vh; */
-  /* display: grid; */
   text-align: center;
   margin: auto 30px;
-  padding-bottom: 30px;
-  /* gap: 20px; */
+  padding-bottom: 12px;
 }
+
+.gameQuestion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 ul {
   list-style: none;
@@ -81,16 +108,11 @@ ul {
 }
 
 .game-option {
-  border: 2px solid aquamarine;
+  border: 1px solid var(--font-color);
   font-size: 1.2rem;
   padding: 10px;
   border-radius: 10px;
-}
-
-.game-option:hover {
-  background-color: rgb(255, 255, 255);
-  cursor: pointer;
-  color: black;
+  transition: 0.5s;
 }
 
 .checkAnswer-Div {
@@ -102,17 +124,14 @@ ul {
 .checkAnswer-Btn {
   font-size: 2rem;
   border-radius: 10px;
-  padding: 10px;
+  padding: 10px 20px;
+  /* padding: 20px; */
   background-color: black;
   color: white;
   border: none;
   cursor: pointer;
   transition: 0.3s;
-}
-
-.checkAnswer-Btn:hover {
-  background-color: white;
-  color: black;
+  border: 1px solid var(--font-color);
 }
 
 .loadingApi {
@@ -120,5 +139,22 @@ ul {
   display: grid;
   place-items: center;
   font-size: 4rem;
-  color: aquamarine;
+  color: var(--font-color);
+}
+
+/* li {
+  background-color: rgb(145, 57, 57);
+} */
+
+.game-option:hover {
+  background-color: var(--hover-Color);
+  cursor: pointer;
+  color: black;
+  transform: scale(0.9);
+}
+
+.checkAnswer-Btn:hover {
+  background-color: var(--hover-Color);
+  color: black;
+  transform: scale(1.05);
 }

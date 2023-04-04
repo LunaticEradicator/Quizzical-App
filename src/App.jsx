@@ -74,6 +74,7 @@ export default function App() {
   }, [isGameOver])
 
   useEffect(() => {
+    // used for making sure that when the api is first called, score function does not run [At first return empty since state is set to an empty array]
     if (quiz.length !== 0) {
       setApiLoading(true);
     }
@@ -225,7 +226,7 @@ export default function App() {
           isCheckValue={isCheck[0].isCheckAnswer}
           isGameOver={isGameOver}
         />}
-      {isCheck[0].isCheckAnswer && <h2>You Scored {score} / 5 </h2>}
+      {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>You Scored {score} / 5 </h2>}
       {/* <h2>You Scored {score} / 5 </h2> */}
     </div>
     )
