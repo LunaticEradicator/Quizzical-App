@@ -7,7 +7,6 @@ import Game from './Pages/Game';
 import CheckAnswer from './Pages/CheckAnswer';
 
 
-
 export default function App() {
   // console.clear()
   let questionIdIncrement = 1;
@@ -17,6 +16,10 @@ export default function App() {
 
   const [ApiLoading, setApiLoading] = useState(false);
   const [quiz, setQuiz] = useState([]);
+
+  const [categories, setCategories] = useState('');
+  const [difficulties, setDifficulty] = useState('');
+  const [numberOfQuestion, setNumberOfQuestion] = useState(5);
 
   const [isSelectionScreenOn, setIsSelectionScreenOn] = useState(false);
   const [isGameOn, setIsGameOn] = useState(false)
@@ -33,6 +36,11 @@ export default function App() {
       optionThree: '',
       optionFour: '',
       optionFive: '',
+      optionSix: '',
+      optionSeven: '',
+      optionEight: '',
+      optionNine: '',
+      optionTen: '',
     }
   ]);
   const [isGameOver, setIsGameOver] = useState(false)
@@ -45,16 +53,13 @@ export default function App() {
       return { isCheckAnswer: false }
     }))
   }
-  // const amount = 5;
-  const [cate, setCate] = useState('');
 
   useEffect(() => {
     async function fetchAPI() {
       console.log('Inside use Effect --')
-      console.log(cate)
-      const response = await fetch(`https://opentdb.com/api.php?amount=5&category=${cate}&type=multiple`);
+      console.log(categories)
+      const response = await fetch(`https://opentdb.com/api.php?amount=${numberOfQuestion}&category=${categories}&difficulty=${difficulties}&type=multiple`);
       const data = await response.json();
-
 
       setQuiz(data.results) // [shows an array of five question]
       setQuiz(prevApiCall => prevApiCall.map(item => { // map through each of the quiz and add new data to it [isOptionOne,optionOne,questionId]
@@ -72,8 +77,7 @@ export default function App() {
     }
     restartGame()
     fetchAPI() // assign all this to a function since we use async await method
-    // }, [isGameOn])
-  }, [isGameOver || cate])
+  }, [isGameOver || categories || difficulties || numberOfQuestion]) // only call API when this changes
 
   useEffect(() => {
     if (quiz.length !== 0) {
@@ -84,19 +88,55 @@ export default function App() {
   if (ApiLoading) {
     // at first the api calls an empty string which cause error,
     // to prevent this we only render checkScore, if we get the api data []
+
     checkScore(options[0].optionOne, 0)
     checkScore(options[0].optionTwo, 1)
     checkScore(options[0].optionThree, 2)
     checkScore(options[0].optionFour, 3)
-    checkScore(options[0].optionFive, 4)
-    categoriesHeadingCondition = quiz[0].category === quiz[1].category && quiz[0].category === quiz[4].category ? quiz[0].category : 'Random';
+
+    // will only checkScore from questions 5-10 if the player selects chooses it 
+    if (quiz.length === 5) {
+      checkScore(options[0].optionFive, 4)
+    }
+    if (quiz.length === 6) {
+      checkScore(options[0].optionFive, 4)
+      checkScore(options[0].optionSix, 5)
+    }
+    if (quiz.length === 7) {
+      checkScore(options[0].optionFive, 4)
+      checkScore(options[0].optionSix, 5)
+      checkScore(options[0].optionSeven, 6)
+    }
+    if (quiz.length === 8) {
+      checkScore(options[0].optionFive, 4)
+      checkScore(options[0].optionSix, 5)
+      checkScore(options[0].optionSeven, 6)
+      checkScore(options[0].optionEight, 7)
+
+    }
+    if (quiz.length === 9) {
+      checkScore(options[0].optionFive, 4)
+      checkScore(options[0].optionSix, 5)
+      checkScore(options[0].optionSeven, 6)
+      checkScore(options[0].optionEight, 7)
+      checkScore(options[0].optionNine, 8)
+    }
+    if (quiz.length === 10) {
+      checkScore(options[0].optionFive, 4)
+      checkScore(options[0].optionSix, 5)
+      checkScore(options[0].optionSeven, 6)
+      checkScore(options[0].optionEight, 7)
+      checkScore(options[0].optionNine, 8)
+      checkScore(options[0].optionTen, 9)
+    }
+    categoriesHeadingCondition = (quiz[0].category === quiz[1].category && quiz[0].category === quiz[4].category) ? quiz[0].category : 'Random';
   }
 
   // console.log(ApiLoading)
   console.log(quiz)
-  console.log(cate)
+  // console.log(categories)
   // console.log(score)
-  // console.log(options)
+  console.log(options)
   // console.log(quiz.length)
   // console.log(isCheck)
   // console.log(isCheck[0].isCheckAnswer)
@@ -135,19 +175,24 @@ export default function App() {
       // console.log(questionId)
       let liTextContent = event.target.innerText;   //get the textContent of the clicked option
 
-      setQuiz(prevArr => prevArr.map(question => {
+      setQuiz(prevArr => prevArr.map(question => { //  saving each question, [selectedOption]
         return (
           question.questionId === questionId ? { ...question, selectedOption: liTextContent } : question
         )
       }))
 
-      setOptions(prevOptions => prevOptions.map(question => {
+      setOptions(prevOptions => prevOptions.map(question => { // saving each question [score]
         return (
           questionId === 1 ? { ...question, optionOne: liTextContent } : question &&
             questionId === 2 ? { ...question, optionTwo: liTextContent } : question &&
               questionId === 3 ? { ...question, optionThree: liTextContent } : question &&
                 questionId === 4 ? { ...question, optionFour: liTextContent } : question &&
-                  questionId === 5 ? { ...question, optionFive: liTextContent } : question
+                  questionId === 5 ? { ...question, optionFive: liTextContent } : question &&
+                    questionId === 6 ? { ...question, optionSix: liTextContent } : question &&
+                      questionId === 7 ? { ...question, optionSeven: liTextContent } : question &&
+                        questionId === 8 ? { ...question, optionEight: liTextContent } : question &&
+                          questionId === 9 ? { ...question, optionNine: liTextContent } : question &&
+                            questionId === 10 ? { ...question, optionTen: liTextContent } : question
         )
       }))
 
@@ -164,7 +209,7 @@ export default function App() {
   }
 
 
-  function checkScore(optionNumber, index) {
+  function checkScore(optionNumber, index) { // each question has a score of one 
     if (optionNumber === quiz[index].correct_answer) {
       score++
     }
@@ -209,13 +254,66 @@ export default function App() {
   function selectCategories(event, categoriesName, categoriesIndex) {
     if (event.target.value === categoriesName) {
       console.log(`${event.target.value} it is`)
-      setCate(prevCate => prevCate = categoriesIndex)
+      setCategories(prevCategories => prevCategories = categoriesIndex)
     }
   }
 
-  function sectionScreenSelected(event) {
+  function selectDifficulty(event, difficultyName) {
+    if (event.target.value === difficultyName) {
+      console.log(`${event.target.value} it is`)
+      setDifficulty(difficultyName)
+    }
+  }
+
+  function selectNumberOfQuestions(event, questionName, categoriesIndex) {
+    if (event.target.value === questionName) {
+      console.log(`${event.target.value} it is`)
+      setNumberOfQuestion(prevNumberOfQuestion => prevNumberOfQuestion = categoriesIndex)
+    }
+  }
+
+
+  function sectionScreenCategoriesSelected(event) {
+    selectCategories(event, 'General Knowledge', 9)
+    selectCategories(event, 'Entertainment:Books', 10)
+    selectCategories(event, 'Entertainment:Film', 11)
+    selectCategories(event, 'Entertainment:Music', 12)
+    selectCategories(event, 'Entertainment:Musicals & Theatres', 13)
+    selectCategories(event, 'Entertainment:Television', 14)
+    selectCategories(event, 'Entertainment:Video Game', 15)
+    selectCategories(event, 'Entertainment:Board Game', 16)
+    selectCategories(event, 'Science & Nature', 17)
+    selectCategories(event, 'Science: Computers', 18)
+    selectCategories(event, 'Science: Mathematics', 19)
+    selectCategories(event, 'Mythology', 20)
+    selectCategories(event, 'Sports', 21)
+    selectCategories(event, 'Geography', 22)
     selectCategories(event, 'History', 23)
-    selectCategories(event, 'Video Game', 15)
+    selectCategories(event, 'Politics', 24)
+    selectCategories(event, 'Art', 25)
+    selectCategories(event, 'Celebrities', 26)
+    selectCategories(event, 'Animals', 27)
+    selectCategories(event, 'Vehicles', 28)
+    selectCategories(event, 'Entertainment: Comics', 29)
+    selectCategories(event, 'Science: Gadgets', 30)
+    selectCategories(event, 'Entertainment: Japanese Anime & Manga', 31)
+    selectCategories(event, 'Entertainment: Cartoons & Animations', 32)
+  }
+
+  function sectionScreenDifficultySelected(event) {
+    selectDifficulty(event, 'easy')
+    selectDifficulty(event, 'medium')
+    selectDifficulty(event, 'hard')
+  }
+
+  function sectionScreenNumberOfQuestionSelected(event) {
+    selectNumberOfQuestions(event, 'four', 4)
+    selectNumberOfQuestions(event, 'five', 5)
+    selectNumberOfQuestions(event, 'six', 6)
+    selectNumberOfQuestions(event, 'seven', 7)
+    selectNumberOfQuestions(event, 'eight', 8)
+    selectNumberOfQuestions(event, 'nine', 9)
+    selectNumberOfQuestions(event, 'ten', 10)
   }
 
   return ApiLoading === false
@@ -234,12 +332,15 @@ export default function App() {
           selectionScreenUI={() => selectionScreen()}
           isGameOn={isSelectionScreenOn}
           startGameUI={() => startGameScreen()}
-          onClickCategories={() => sectionScreenSelected(event)}
+          onClickCategories={() => sectionScreenCategoriesSelected(event)}
+          onClickDifficulty={() => sectionScreenDifficultySelected(event)}
+          onClickNumberOfQuestion={() => sectionScreenNumberOfQuestionSelected(event)}
         />
       }
       {isGameOn && gameMenu}
       {isGameOn && checkAnswer}
-      {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>You Scored {score} / 5 </h2>}
+      {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>You Scored {score} /  {quiz.length} </h2>}
+      {/* {<h2 className='scoreUI'>You Scored {score} / {quiz.length} </h2>} */}
     </div>
 }
 

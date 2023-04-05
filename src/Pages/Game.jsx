@@ -29,25 +29,28 @@ export default function Game(props) {
         return decodeHTMLEntities;
     })(); // used to escape HTML entities [' "" ]
 
-    const incorrect = props.incorrect_answers; // decodeEntities won't work on object
-    const correct = decodeEntities(props.correct_answer);
+    const incorrectAnswer = props.incorrect_answers; // decodeEntities won't work on object
+    const correctAnswer = decodeEntities(props.correct_answer);
     const selectedOption = decodeEntities(props.selectedOption);
 
     // to convert incorrect into string [decodeEntities Function will only work on strings]
-    const incorrectOne = decodeEntities(incorrect[0]);
-    const incorrectTwo = decodeEntities(incorrect[1]);
-    const incorrectThree = decodeEntities(incorrect[2]);
+    const incorrectOptionOne = decodeEntities(incorrectAnswer[0]);
+    const incorrectOptionTwo = decodeEntities(incorrectAnswer[1]);
+    const incorrectOptionThree = decodeEntities(incorrectAnswer[2]);
 
-    let allOptions = [correct, incorrectOne, incorrectTwo, incorrectThree];
+    let allOptions = [correctAnswer, incorrectOptionOne, incorrectOptionTwo, incorrectOptionThree];
     const [option, setOption] = useState(allOptions)
 
-    // console.log(`------------------------------------------`)
-    // console.log(props.correct_answer)
+    console.log(`------------------------------------------`)
+    console.log(props.correct_answer)
+    console.log(decodeEntities(props.correct_answer))
+    console.log(props.selectedOption)
+    // console.log(correctAnswer)
     // console.log(props.selectedOption)
     // console.log(selectedOption)
     // // console.log(props.incorrect_answers)
     // // console.log(typeof (incorrectOne))
-    // console.log(`------------------------------------------`)
+    console.log(`------------------------------------------`)
 
     function selectionStyle(onValue) {
         const styles = {
@@ -76,13 +79,13 @@ export default function Game(props) {
     }
 
     function styleConditions(onValue, index) { //if onValue is true 
-        if (option[index] === props.correct_answer && props.isCheck && selectedOption !== "") { // always show the correct option
+        if (option[index] === correctAnswer && props.isCheck && selectedOption !== "") { // always show the correct option
             return showAllAnswersStyle
         }
-        else if (selectedOption === props.correct_answer && props.isCheck) { // if selected option is correct
+        else if (props.selectedOption === decodeEntities(props.correct_answer) && props.isCheck) { // if selected option is correct
             return correctAnswerStyle(onValue)
         }
-        else if (selectedOption !== props.correct_answer && props.isCheck) { // if selected option is wrong 
+        else if (selectedOption !== correctAnswer && props.isCheck) { // if selected option is wrong 
             return wrongAnswerStyle(onValue)
         }
         else {

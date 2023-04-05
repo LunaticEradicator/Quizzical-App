@@ -7,4 +7,6 @@ export default function CheckAnswer(props) {
     )
 }
 
-// implement filter
+
+// fix question number filter
+// fix ' answer checking
