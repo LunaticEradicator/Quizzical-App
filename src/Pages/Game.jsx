@@ -41,13 +41,13 @@ export default function Game(props) {
     let allOptions = [correct, incorrectOne, incorrectTwo, incorrectThree];
     const [option, setOption] = useState(allOptions)
 
-    console.log(`------------------------------------------`)
-    console.log(props.correct_answer)
-    console.log(props.selectedOption)
-    console.log(selectedOption)
-    // console.log(props.incorrect_answers)
-    // console.log(typeof (incorrectOne))
-    console.log(`------------------------------------------`)
+    // console.log(`------------------------------------------`)
+    // console.log(props.correct_answer)
+    // console.log(props.selectedOption)
+    // console.log(selectedOption)
+    // // console.log(props.incorrect_answers)
+    // // console.log(typeof (incorrectOne))
+    // console.log(`------------------------------------------`)
 
     function selectionStyle(onValue) {
         const styles = {

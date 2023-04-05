@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
 import Menu from './Pages/Menu'
+// import SelectionMenu from './Pages/SelectionMenu'
 import Game from './Pages/Game';
 import CheckAnswer from './Pages/CheckAnswer';
 
@@ -10,10 +11,18 @@ import CheckAnswer from './Pages/CheckAnswer';
 export default function App() {
   // console.clear()
   let questionIdIncrement = 1;
-  let score = 0
+
+  let score = 0  // Will only update if ApiLoading is true
+  let categoriesHeadingCondition = '' // Will only update if ApiLoading is true
+
   const [ApiLoading, setApiLoading] = useState(false);
   const [quiz, setQuiz] = useState([]);
-  const [isGameOn, setIsGameOn] = useState(false);
+
+  const [isSelectionScreenOn, setIsSelectionScreenOn] = useState(false);
+  const [isGameOn, setIsGameOn] = useState(false)
+
+  const [isCategories, setIsCategories] = useState(false);
+
   const [isCheck, setIsCheck] = useState([
     { isCheckAnswer: false },
   ]);
@@ -35,22 +44,15 @@ export default function App() {
     setIsCheck(prevIsCheck => prevIsCheck.map(item => {
       return { isCheckAnswer: false }
     }))
-    // setOptions(prevIsCheck => {
-    //   return (
-    //     {
-    //       optionOne: '',
-    //       optionTwo: '',
-    //       optionThree: '',
-    //       optionFour: '',
-    //       optionFive: '',
-    //     }
-    //   )
-    // })
   }
+  // const amount = 5;
+  const [cate, setCate] = useState('');
 
   useEffect(() => {
     async function fetchAPI() {
-      const response = await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
+      console.log('Inside use Effect --')
+      console.log(cate)
+      const response = await fetch(`https://opentdb.com/api.php?amount=5&category=${cate}&type=multiple`);
       const data = await response.json();
 
 
@@ -63,7 +65,6 @@ export default function App() {
             optionOne: nanoid(), optionTwo: nanoid(), optionThree: nanoid(), optionFour: nanoid(),
             questionId: questionIdIncrement++,
             selectedOption: '',
-            // isMarkOne: false, isMarkTwo: false, isMarkThree: false, isMarkFour: false,
             optionIndex: randomUnique(4, 4) // this gives a each question an array of four unique random number [which we give as the index for each option]
           }
         )
@@ -71,25 +72,35 @@ export default function App() {
     }
     restartGame()
     fetchAPI() // assign all this to a function since we use async await method
-  }, [isGameOver])
+    // }, [isGameOn])
+  }, [isGameOver || cate])
 
   useEffect(() => {
-    // used for making sure that when the api is first called, score function does not run [At first return empty since state is set to an empty array]
     if (quiz.length !== 0) {
       setApiLoading(true);
     }
-  }, [quiz]) // checking if quiz is not empty 
+  }, [quiz]) // checking if quiz is not empty
 
-  console.log(ApiLoading)
+  if (ApiLoading) {
+    // at first the api calls an empty string which cause error,
+    // to prevent this we only render checkScore, if we get the api data []
+    checkScore(options[0].optionOne, 0)
+    checkScore(options[0].optionTwo, 1)
+    checkScore(options[0].optionThree, 2)
+    checkScore(options[0].optionFour, 3)
+    checkScore(options[0].optionFive, 4)
+    categoriesHeadingCondition = quiz[0].category === quiz[1].category && quiz[0].category === quiz[4].category ? quiz[0].category : 'Random';
+  }
+
+  // console.log(ApiLoading)
   console.log(quiz)
-  console.log(score)
-  console.log(options)
-  console.log(quiz.length)
-  console.log(isCheck)
-  console.log(isCheck[0].isCheckAnswer)
-  console.log(isGameOver)
-
-
+  console.log(cate)
+  // console.log(score)
+  // console.log(options)
+  // console.log(quiz.length)
+  // console.log(isCheck)
+  // console.log(isCheck[0].isCheckAnswer)
+  // console.log(isGameOver)
 
   const randomUnique = (range, count) => { // create an array of 4 unique random Number[which does not includes duplicates]
     let num = new Set();
@@ -110,6 +121,13 @@ export default function App() {
     )
   })
 
+  const checkAnswer =
+    < CheckAnswer
+      key={nanoid()}
+      toggleCheckAnswer={() => isCheckAnswer(event)}
+      isCheckValue={isCheck[0].isCheckAnswer}
+      isGameOver={isGameOver}
+    />
 
   function toggleAndSaveOption(optionId, event, questionId) {
     if (isCheck[0].isCheckAnswer === false) {  //only select if the player haven't checked the answer
@@ -152,31 +170,6 @@ export default function App() {
     }
   }
 
-  if (ApiLoading) {
-    // at first the api calls an empty string which cause error,
-    // to prevent this we only render checkScore, if we get the api data []
-    checkScore(options[0].optionOne, 0)
-    checkScore(options[0].optionTwo, 1)
-    checkScore(options[0].optionThree, 2)
-    checkScore(options[0].optionFour, 3)
-    checkScore(options[0].optionFive, 4)
-    // if (options[0].optionOne === quiz[0].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionTwo === quiz[1].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionThree === quiz[2].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionFour === quiz[3].correct_answer) {
-    //   score++
-    // }
-    // if (options[0].optionFive === quiz[4].correct_answer) {
-    //   score++
-    // }
-  }
-
   function isCheckAnswer(event) { // Only toggle, if options for each question are selected
     console.log(event.target.textContent)
     if (quiz.every(eachElement => eachElement.selectedOption !== '')) {
@@ -202,34 +195,52 @@ export default function App() {
     // }
   }
 
-  function changeScreen() {
+  function selectionScreen() {
     console.clear()
-    setIsGameOn(prevIsGameOn => !prevIsGameOn)
+    setIsSelectionScreenOn(prevIsGameOn => !prevIsGameOn)
+  }
+
+  function startGameScreen() {
+    console.clear()
+    setIsGameOn(prevSelection => !prevSelection)
+    // alert(isSelection)
+  }
+
+  function selectCategories(event, categoriesName, categoriesIndex) {
+    if (event.target.value === categoriesName) {
+      console.log(`${event.target.value} it is`)
+      setCate(prevCate => prevCate = categoriesIndex)
+    }
+  }
+
+  function sectionScreenSelected(event) {
+    selectCategories(event, 'History', 23)
+    selectCategories(event, 'Video Game', 15)
   }
 
   return ApiLoading === false
     ?
-    (<div className='loadingApi'>
+    <div className='loadingApi'>
       Fetching data ....
       <br />
       Please Wait.
-    </div >)
+    </div >
     :
-    (<div className="App">
-      {isGameOn && <h2>Select Your Answers</h2>}
-      {!isGameOn && <Menu onClick={() => changeScreen()} />}
+    <div className="App">
+      {isGameOn && <h2>Categories - {categoriesHeadingCondition} </h2>}
+      {
+        !isGameOn &&
+        <Menu
+          selectionScreenUI={() => selectionScreen()}
+          isGameOn={isSelectionScreenOn}
+          startGameUI={() => startGameScreen()}
+          onClickCategories={() => sectionScreenSelected(event)}
+        />
+      }
       {isGameOn && gameMenu}
-      {isGameOn &&
-        < CheckAnswer
-          key={nanoid()}
-          toggleCheckAnswer={() => isCheckAnswer(event)}
-          isCheckValue={isCheck[0].isCheckAnswer}
-          isGameOver={isGameOver}
-        />}
+      {isGameOn && checkAnswer}
       {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>You Scored {score} / 5 </h2>}
-      {/* <h2>You Scored {score} / 5 </h2> */}
     </div>
-    )
 }
 
 
