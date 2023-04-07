@@ -20,13 +20,22 @@ export default function Menu(props) {
                             <div className='selectionMenu-numberOfQuestion-buttons'>
                                 <select onClick={props.onClickNumberOfQuestion} name="numberOfQuestion" id="numberOfQuestion">
                                     <option selected >Number of question</option>
-                                    <option value="four">4</option>
                                     <option value="five">5</option>
                                     <option value="six">6</option>
                                     <option value="seven">7</option>
                                     <option value="eight">8</option>
                                     <option value="nine">9</option>
                                     <option value="ten">10</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className='selectionMenu-difficulty'>
+                            <div className='selectionMenu-difficulty-buttons'>
+                                <select onClick={props.onClickDifficulty} name="difficulty" id="difficulty">
+                                    <option selected >Select Difficulty</option>
+                                    <option value="easy">Easy</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="hard">Hard</option>
                                 </select>
                             </div>
                         </div>
@@ -62,21 +71,11 @@ export default function Menu(props) {
                                 </select>
                             </div>
                         </div>
-                        <div className='selectionMenu-difficulty'>
-                            <div className='selectionMenu-difficulty-buttons'>
-                                <select onClick={props.onClickDifficulty} name="difficulty" id="difficulty">
-                                    <option selected >Select Difficulty</option>
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
-                                </select>
-                            </div>
-                        </div>
                         <div className="selectionMenu-confirm-btn-div">
                             <button className='selectionMenu-confirm-btn' onClick={props.startGameUI}>Confirm</button>
                         </div>
                         <div className="selectionMenu-default-text-div">
-                            <p className="selectionMenu-default-text">If no options are selected , random five question will be displayed</p>
+                            <p className="selectionMenu-default-text"><mark>If no options are selected , a random five question will be displayed !</mark></p>
                         </div>
                     </div>
             }

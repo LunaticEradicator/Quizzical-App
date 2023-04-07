@@ -36,9 +36,13 @@ h1 {
 }
 
 h2 {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   text-align: center;
   margin: 0;
+}
+
+.h2-Name {
+  margin: auto 30px;
 }
 
 .scoreUI {
@@ -48,7 +52,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   margin: 10px;
 }
 
@@ -103,10 +107,14 @@ hr {
   padding: 10px;
   margin: 10px;
   background-color: rgb(61, 61, 61);
-  color: white;
   text-align: center;
   cursor: pointer;
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  transition: 0.5s;
 }
+
 
 .selectionMenu {
   display: grid;
@@ -129,7 +137,6 @@ select {
   padding: 5px;
   outline: none;
   border: 1px solid aquamarine;
-  /* border-radius: 10px; */
 }
 
 option {
@@ -139,18 +146,22 @@ option {
   padding: 5px;
   outline: none;
   border: 1px solid aquamarine;
-  /* border-radius: 10px; */
 }
-
 
 .selectionMenu-confirm-btn-div {
   text-align: center;
 }
 
-.selectionMenu-confirm-btn {
-  background-color: black;
-  color: white;
-  padding: 10px 20px;
+.selectionMenu-default-text {
+  text-align: center;
+  margin: 0;
+  font-weight: bold;
+}
+
+mark {
+  background-color: transparent;
+  color: rgb(255, 255, 255);
+  border-bottom: 1px solid aquamarine;
 }
 
 .game {
@@ -169,7 +180,7 @@ option {
 ul {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(50px, 300px));
+  grid-template-columns: repeat(auto-fit, minmax(50px, 350px));
   justify-content: center;
   gap: 20px;
   padding: 0px;
@@ -210,13 +221,23 @@ ul {
   color: var(--font-color);
 }
 
+.menu {
+  font-size: 1.5rem;
+  margin: 5px;
+  /* margin-bottom: 5px; */
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid var(--font-color);
+  max-width: 75px;
+  background-color: black;
+  transition: 0.5s;
+}
+
 /* li {
   background-color: rgb(145, 57, 57);
 } */
-.selectionMenu-default-text {
-  text-align: center;
-  margin: 0;
-}
+
 
 .game-option:hover {
   background-color: var(--hover-Color);
@@ -229,4 +250,17 @@ ul {
   background-color: var(--hover-Color);
   color: black;
   transform: scale(1.05);
+}
+
+.menu:hover {
+  background-color: var(--hover-Color);
+  color: black;
+  transform: scale(1.1);
+}
+
+.selectionMenu-confirm-btn:hover {
+  background-color: var(--hover-Color);
+  cursor: pointer;
+  color: black;
+  transform: scale(0.9);
 }

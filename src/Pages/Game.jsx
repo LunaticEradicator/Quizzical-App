@@ -82,7 +82,8 @@ export default function Game(props) {
         if (option[index] === correctAnswer && props.isCheck && selectedOption !== "") { // always show the correct option
             return showAllAnswersStyle
         }
-        else if (props.selectedOption === decodeEntities(props.correct_answer) && props.isCheck) { // if selected option is correct
+        else if (decodeEntities(props.selectedOption) === decodeEntities(props.correct_answer) && props.isCheck) { // if selected option is correct
+            console.log('Correct Answer')
             return correctAnswerStyle(onValue)
         }
         else if (selectedOption !== correctAnswer && props.isCheck) { // if selected option is wrong 

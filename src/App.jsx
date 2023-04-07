@@ -24,7 +24,8 @@ export default function App() {
   const [isSelectionScreenOn, setIsSelectionScreenOn] = useState(false);
   const [isGameOn, setIsGameOn] = useState(false)
 
-  const [isCategories, setIsCategories] = useState(false);
+  const [isRestart, setIsRestart] = useState(false)
+
 
   const [isCheck, setIsCheck] = useState([
     { isCheckAnswer: false },
@@ -49,15 +50,23 @@ export default function App() {
     setIsGameOver(false);
     questionIdIncrement = 1;
     score = 0
+    // setRestart(false)
     setIsCheck(prevIsCheck => prevIsCheck.map(item => {
       return { isCheckAnswer: false }
     }))
+    // setApiLoading(false)
   }
+
+  console.log(numberOfQuestion)
+  console.log(categories)
+  console.log(difficulties)
 
   useEffect(() => {
     async function fetchAPI() {
+      console.clear()
       console.log('Inside use Effect --')
       console.log(categories)
+      // https://opentdb.com/api.php?amount=10&category=9&difficulty=hard&type=multiple
       const response = await fetch(`https://opentdb.com/api.php?amount=${numberOfQuestion}&category=${categories}&difficulty=${difficulties}&type=multiple`);
       const data = await response.json();
 
@@ -93,36 +102,31 @@ export default function App() {
     checkScore(options[0].optionTwo, 1)
     checkScore(options[0].optionThree, 2)
     checkScore(options[0].optionFour, 3)
+    checkScore(options[0].optionFive, 4)
+
 
     // will only checkScore from questions 5-10 if the player selects chooses it 
-    if (quiz.length === 5) {
-      checkScore(options[0].optionFive, 4)
-    }
+
     if (quiz.length === 6) {
-      checkScore(options[0].optionFive, 4)
       checkScore(options[0].optionSix, 5)
     }
     if (quiz.length === 7) {
-      checkScore(options[0].optionFive, 4)
       checkScore(options[0].optionSix, 5)
       checkScore(options[0].optionSeven, 6)
     }
     if (quiz.length === 8) {
-      checkScore(options[0].optionFive, 4)
       checkScore(options[0].optionSix, 5)
       checkScore(options[0].optionSeven, 6)
       checkScore(options[0].optionEight, 7)
 
     }
     if (quiz.length === 9) {
-      checkScore(options[0].optionFive, 4)
       checkScore(options[0].optionSix, 5)
       checkScore(options[0].optionSeven, 6)
       checkScore(options[0].optionEight, 7)
       checkScore(options[0].optionNine, 8)
     }
     if (quiz.length === 10) {
-      checkScore(options[0].optionFive, 4)
       checkScore(options[0].optionSix, 5)
       checkScore(options[0].optionSeven, 6)
       checkScore(options[0].optionEight, 7)
@@ -307,7 +311,6 @@ export default function App() {
   }
 
   function sectionScreenNumberOfQuestionSelected(event) {
-    selectNumberOfQuestions(event, 'four', 4)
     selectNumberOfQuestions(event, 'five', 5)
     selectNumberOfQuestions(event, 'six', 6)
     selectNumberOfQuestions(event, 'seven', 7)
@@ -315,6 +318,15 @@ export default function App() {
     selectNumberOfQuestions(event, 'nine', 9)
     selectNumberOfQuestions(event, 'ten', 10)
   }
+
+  function goMenu() {
+    setIsGameOver(true);
+    setIsGameOn(false);
+    setApiLoading(false);
+  }
+
+  console.log(`-----------------------------------!!!!!----`)
+  console.log(isRestart)
 
   return ApiLoading === false
     ?
@@ -325,7 +337,13 @@ export default function App() {
     </div >
     :
     <div className="App">
-      {isGameOn && <h2>Categories - {categoriesHeadingCondition} </h2>}
+      {isGameOn && <div onClick={goMenu} className='menu'>Menu</div>}
+      {isGameOn &&
+        <div className='h2-Name'>
+          <h2 >Categories - {categoriesHeadingCondition} </h2>
+          <hr />
+        </div>
+      }
       {
         !isGameOn &&
         <Menu
@@ -339,8 +357,8 @@ export default function App() {
       }
       {isGameOn && gameMenu}
       {isGameOn && checkAnswer}
-      {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>You Scored {score} /  {quiz.length} </h2>}
-      {/* {<h2 className='scoreUI'>You Scored {score} / {quiz.length} </h2>} */}
+      {/* {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>You Scored {score} /  {quiz.length} </h2>} */}
+      {<h2 className='scoreUI'>You Scored {score} / {quiz.length} </h2>}
     </div>
 }
 
