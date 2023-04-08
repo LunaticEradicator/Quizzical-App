@@ -7,16 +7,17 @@ export default function Menu(props) {
             </div>
 
             {
+                //   if game is not started it will display 'Start quiz'
+                //  else it will show selectionScreen  
+
                 !props.isGameOn
                     ?
                     <div className="intro-button-div">
                         <button onClick={props.selectionScreenUI} className="intro-button">Start Quiz</button>
-
                     </div>
                     :
                     <div className='selectionMenu'>
                         <div className='selectionMenu-numberOfQuestion'>
-                            {/* <h2>Select Difficulty</h2> */}
                             <div className='selectionMenu-numberOfQuestion-buttons'>
                                 <select onClick={props.onClickNumberOfQuestion} name="numberOfQuestion" id="numberOfQuestion">
                                     <option selected >Number of question</option>
@@ -29,18 +30,7 @@ export default function Menu(props) {
                                 </select>
                             </div>
                         </div>
-                        <div className='selectionMenu-difficulty'>
-                            <div className='selectionMenu-difficulty-buttons'>
-                                <select onClick={props.onClickDifficulty} name="difficulty" id="difficulty">
-                                    <option selected >Select Difficulty</option>
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
-                                </select>
-                            </div>
-                        </div>
                         <div className='selectionMenu-categories'>
-                            {/* <h2>Select Categories</h2> */}
                             <div className="selectionMenu-categories-buttons">
                                 <select onClick={props.onClickCategories} name="categories" id="categories">
                                     <option selected >Select Categories</option>
@@ -68,6 +58,16 @@ export default function Menu(props) {
                                     <option value="Science: Gadgets">Science: Gadgets</option>
                                     <option value="Entertainment: Japanese Anime & Manga">Entertainment: Japanese Anime & Manga</option>
                                     <option value="Entertainment: Cartoons & Animations">Entertainment: Cartoons & Animations</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className='selectionMenu-difficulty'>
+                            <div className='selectionMenu-difficulty-buttons'>
+                                <select onClick={props.onClickDifficulty} name="difficulty" id="difficulty">
+                                    <option selected >Select Difficulty</option>
+                                    <option value="easy">Easy</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="hard">Hard</option>
                                 </select>
                             </div>
                         </div>

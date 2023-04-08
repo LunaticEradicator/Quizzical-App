@@ -19,6 +19,15 @@ body {
   color: white;
 }
 
+.loadingApi {
+  text-align: center;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-size: 4rem;
+  color: var(--font-color);
+}
+
 img {
   max-width: 40px;
 }
@@ -41,7 +50,7 @@ h2 {
   margin: 0;
 }
 
-.h2-Name {
+.userSelected-type {
   margin: auto 30px;
 }
 
@@ -49,11 +58,6 @@ h2 {
   margin: 0;
   margin-top: 10px;
   font-size: 2rem;
-}
-
-h3 {
-  font-size: 1.2rem;
-  margin: 10px;
 }
 
 hr {
@@ -136,7 +140,7 @@ select {
   font-size: 1.2rem;
   padding: 5px;
   outline: none;
-  border: 1px solid aquamarine;
+  border: 1px solid var(--font-color);
 }
 
 option {
@@ -145,7 +149,7 @@ option {
   font-size: 1.2rem;
   padding: 5px;
   outline: none;
-  border: 1px solid aquamarine;
+  border: 1px solid var(--font-color);
 }
 
 .selectionMenu-confirm-btn-div {
@@ -161,7 +165,7 @@ option {
 mark {
   background-color: transparent;
   color: rgb(255, 255, 255);
-  border-bottom: 1px solid aquamarine;
+  border-bottom: 1px solid var(--font-color);
 }
 
 .game {
@@ -170,14 +174,19 @@ mark {
   padding-bottom: 12px;
 }
 
-.gameQuestion {
+.game-Question {
+  font-size: 1.2rem;
+  margin: 10px;
+}
+
+.game-Question-div {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 
-ul {
+.game-All-Options {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(50px, 350px));
@@ -212,19 +221,9 @@ ul {
   border: 1px solid var(--font-color);
 }
 
-.loadingApi {
-  text-align: center;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  font-size: 4rem;
-  color: var(--font-color);
-}
-
 .menu {
   font-size: 1.5rem;
   margin: 5px;
-  /* margin-bottom: 5px; */
   padding: 5px;
   border-radius: 10px;
   cursor: pointer;
@@ -233,10 +232,6 @@ ul {
   background-color: black;
   transition: 0.5s;
 }
-
-/* li {
-  background-color: rgb(145, 57, 57);
-} */
 
 
 .game-option:hover {

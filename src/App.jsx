@@ -2,18 +2,36 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
 import Menu from './Pages/Menu'
-// import SelectionMenu from './Pages/SelectionMenu'
+import Confetti from 'react-confetti'
 import Game from './Pages/Game';
 import CheckAnswer from './Pages/CheckAnswer';
 
 
 export default function App() {
-  // console.clear()
-  let questionIdIncrement = 1;
+  var decodeEntities = (function () {
+    // this prevents any overhead from creating the object each time
+    var element = document.createElement('div');
+
+    function decodeHTMLEntities(str) {
+      if (str && typeof str === 'string') {
+        // strip script/html tags
+        str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+        str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+        element.innerHTML = str;
+        str = element.textContent;
+        element.textContent = '';
+      }
+
+      return str;
+    }
+
+    return decodeHTMLEntities;
+  })(); // used to escape HTML entities [' "" ]
 
   let score = 0  // Will only update if ApiLoading is true
   let categoriesHeadingCondition = '' // Will only update if ApiLoading is true
 
+  let questionIdIncrement = 1;
   const [ApiLoading, setApiLoading] = useState(false);
   const [quiz, setQuiz] = useState([]);
 
@@ -23,13 +41,13 @@ export default function App() {
 
   const [isSelectionScreenOn, setIsSelectionScreenOn] = useState(false);
   const [isGameOn, setIsGameOn] = useState(false)
-
-  const [isRestart, setIsRestart] = useState(false)
+  const [isGameOver, setIsGameOver] = useState(false)
 
 
   const [isCheck, setIsCheck] = useState([
     { isCheckAnswer: false },
   ]);
+
   const [options, setOptions] = useState([ //storing each selected option to an array to check score
     {
       optionOne: '',
@@ -44,69 +62,62 @@ export default function App() {
       optionTen: '',
     }
   ]);
-  const [isGameOver, setIsGameOver] = useState(false)
 
   function restartGame() {
     setIsGameOver(false);
     questionIdIncrement = 1;
     score = 0
-    // setRestart(false)
     setIsCheck(prevIsCheck => prevIsCheck.map(item => {
       return { isCheckAnswer: false }
     }))
-    // setApiLoading(false)
   }
 
-  console.log(numberOfQuestion)
-  console.log(categories)
-  console.log(difficulties)
-
   useEffect(() => {
-    async function fetchAPI() {
-      console.clear()
-      console.log('Inside use Effect --')
-      console.log(categories)
-      // https://opentdb.com/api.php?amount=10&category=9&difficulty=hard&type=multiple
-      const response = await fetch(`https://opentdb.com/api.php?amount=${numberOfQuestion}&category=${categories}&difficulty=${difficulties}&type=multiple`);
-      const data = await response.json();
-
-      setQuiz(data.results) // [shows an array of five question]
-      setQuiz(prevApiCall => prevApiCall.map(item => { // map through each of the quiz and add new data to it [isOptionOne,optionOne,questionId]
-        return (
-          {
-            ...item,
-            isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: false,
-            optionOne: nanoid(), optionTwo: nanoid(), optionThree: nanoid(), optionFour: nanoid(),
-            questionId: questionIdIncrement++,
-            selectedOption: '',
-            optionIndex: randomUnique(4, 4) // this gives a each question an array of four unique random number [which we give as the index for each option]
-          }
-        )
-      }))
-    }
     restartGame()
-    fetchAPI() // assign all this to a function since we use async await method
-  }, [isGameOver || categories || difficulties || numberOfQuestion]) // only call API when this changes
+    if (!isGameOver) { // to stop multiple api rendering when pressing 'try again'
+      async function fetchAPI() {
+        console.clear()
+        console.log('Inside use Effect --')
+        // https://opentdb.com/api.php?amount=10&category=9&difficulty=hard&type=multiple
+        const response = await fetch(`https://opentdb.com/api.php?amount=${numberOfQuestion}&category=${categories}&difficulty=${difficulties}&type=multiple`);
+        const data = await response.json();
+        console.log(response)
+        setQuiz(data.results) // [shows an array of five question]
+        setQuiz(prevApiCall => prevApiCall.map(item => { // map through each of the quiz and add new data to it [isOptionOne,optionOne,questionId]
+          return (
+            {
+              ...item,
+              isOptionOne: false, isOptionTwo: false, isOptionThree: false, isOptionFour: false,
+              optionOne: nanoid(), optionTwo: nanoid(), optionThree: nanoid(), optionFour: nanoid(),
+              questionId: questionIdIncrement++,
+              selectedOption: '',
+              optionIndex: randomUnique(4, 4) // this gives a each question an array of four unique random number [which we give as the index for each option]
+            }
+          )
+        }))
+      }
+      fetchAPI() // assign all this to a function since we use async await method
+    }
+  }, [isGameOver, categories, difficulties, numberOfQuestion]) // only call API when this changes
 
-  useEffect(() => {
+
+  useEffect(() => { //  always checking for a true condition [For Below Code]
     if (quiz.length !== 0) {
       setApiLoading(true);
     }
-  }, [quiz]) // checking if quiz is not empty
+  }, [quiz])
 
-  if (ApiLoading) {
-    // at first the api calls an empty string which cause error,
-    // to prevent this we only render checkScore, if we get the api data []
 
+  // at first the api calls will be empty which cause error,
+  // to prevent this we only render checkScore, if we get the api data []
+  if (ApiLoading === true) {
     checkScore(options[0].optionOne, 0)
     checkScore(options[0].optionTwo, 1)
     checkScore(options[0].optionThree, 2)
     checkScore(options[0].optionFour, 3)
     checkScore(options[0].optionFive, 4)
 
-
-    // will only checkScore from questions 5-10 if the player selects chooses it 
-
+    // Will only check if the user select number of quiz more than 5
     if (quiz.length === 6) {
       checkScore(options[0].optionSix, 5)
     }
@@ -136,16 +147,6 @@ export default function App() {
     categoriesHeadingCondition = (quiz[0].category === quiz[1].category && quiz[0].category === quiz[4].category) ? quiz[0].category : 'Random';
   }
 
-  // console.log(ApiLoading)
-  console.log(quiz)
-  // console.log(categories)
-  // console.log(score)
-  console.log(options)
-  // console.log(quiz.length)
-  // console.log(isCheck)
-  // console.log(isCheck[0].isCheckAnswer)
-  // console.log(isGameOver)
-
   const randomUnique = (range, count) => { // create an array of 4 unique random Number[which does not includes duplicates]
     let num = new Set();
     while (num.size < count) {
@@ -154,7 +155,7 @@ export default function App() {
     return [...num];
   }
 
-  const gameMenu = quiz.map(item => {
+  const game = quiz.map(item => {
     return (
       <Game
         {...item}
@@ -174,9 +175,9 @@ export default function App() {
     />
 
   function toggleAndSaveOption(optionId, event, questionId) {
+    console.clear()
+
     if (isCheck[0].isCheckAnswer === false) {  //only select if the player haven't checked the answer
-      // console.clear()
-      // console.log(questionId)
       let liTextContent = event.target.innerText;   //get the textContent of the clicked option
 
       setQuiz(prevArr => prevArr.map(question => { //  saving each question, [selectedOption]
@@ -185,7 +186,7 @@ export default function App() {
         )
       }))
 
-      setOptions(prevOptions => prevOptions.map(question => { // saving each question [score]
+      setOptions(prevOptions => prevOptions.map(question => { // Saves each selected option [For Score Checking]
         return (
           questionId === 1 ? { ...question, optionOne: liTextContent } : question &&
             questionId === 2 ? { ...question, optionTwo: liTextContent } : question &&
@@ -212,36 +213,100 @@ export default function App() {
     }
   }
 
-
   function checkScore(optionNumber, index) { // each question has a score of one 
-    if (optionNumber === quiz[index].correct_answer) {
+    if (optionNumber === decodeEntities(quiz[index].correct_answer)) {
       score++
     }
   }
 
   function isCheckAnswer(event) { // Only toggle, if options for each question are selected
-    console.log(event.target.textContent)
     if (quiz.every(eachElement => eachElement.selectedOption !== '')) {
       setIsCheck(prevQuestionArray => prevQuestionArray.map(item => {
         return (
           { ...item, isCheckAnswer: true }
         )
       }))
+
       if (event.target.textContent === 'Try Again') {
-        setIsGameOver(true);
+        setApiLoading(false) // to show 'Fetching data'
+        setIsGameOver(true); // when true, it will call a new API [useEffect Dependent Array]
       }
     }
     else {
       alert('Select Options for all the question')
     }
+  }
 
-    // if (quiz[0].selectedOption !== '') {
-    //   setQuestionsArray(prevQuestionArray => prevQuestionArray.map(item => {
-    //     return (
-    //       { ...item, isCheckAnswer: true }
-    //     )
-    //   }))
-    // }
+
+  // User Selection ,Number of Questions, Difficulty, Categories ]
+
+  function selectNumberOfQuestionsFNC(event, questionName, categoriesIndex) {
+    if (event.target.value === questionName) {
+      console.log(`${event.target.value} it is`)
+      setNumberOfQuestion(prevNumberOfQuestion => prevNumberOfQuestion = categoriesIndex)
+    }
+  }
+
+  function selectDifficultyFNC(event, difficultyName) {
+    if (event.target.value === difficultyName) {
+      console.log(`${event.target.value} it is`)
+      setDifficulty(difficultyName)
+    }
+  }
+
+  function selectCategoriesFNC(event, categoriesName, categoriesIndex) {
+    if (event.target.value === categoriesName) {
+      console.log(`${event.target.value} it is`)
+      setCategories(prevCategories => prevCategories = categoriesIndex)
+    }
+  }
+
+  function selectNumberOfQuestions(event) {
+    selectNumberOfQuestionsFNC(event, 'five', 5)
+    selectNumberOfQuestionsFNC(event, 'six', 6)
+    selectNumberOfQuestionsFNC(event, 'seven', 7)
+    selectNumberOfQuestionsFNC(event, 'eight', 8)
+    selectNumberOfQuestionsFNC(event, 'nine', 9)
+    selectNumberOfQuestionsFNC(event, 'ten', 10)
+  }
+
+  function selectDifficulty(event) {
+    selectDifficultyFNC(event, 'easy')
+    selectDifficultyFNC(event, 'medium')
+    selectDifficultyFNC(event, 'hard')
+  }
+
+  function selectCategories(event) {
+    selectCategoriesFNC(event, 'General Knowledge', 9)
+    selectCategoriesFNC(event, 'Entertainment:Books', 10)
+    selectCategoriesFNC(event, 'Entertainment:Film', 11)
+    selectCategoriesFNC(event, 'Entertainment:Music', 12)
+    selectCategoriesFNC(event, 'Entertainment:Musicals & Theatres', 13)
+    selectCategoriesFNC(event, 'Entertainment:Television', 14)
+    selectCategoriesFNC(event, 'Entertainment:Video Game', 15)
+    selectCategoriesFNC(event, 'Entertainment:Board Game', 16)
+    selectCategoriesFNC(event, 'Science & Nature', 17)
+    selectCategoriesFNC(event, 'Science: Computers', 18)
+    selectCategoriesFNC(event, 'Science: Mathematics', 19)
+    selectCategoriesFNC(event, 'Mythology', 20)
+    selectCategoriesFNC(event, 'Sports', 21)
+    selectCategoriesFNC(event, 'Geography', 22)
+    selectCategoriesFNC(event, 'History', 23)
+    selectCategoriesFNC(event, 'Politics', 24)
+    selectCategoriesFNC(event, 'Art', 25)
+    selectCategoriesFNC(event, 'Celebrities', 26)
+    selectCategoriesFNC(event, 'Animals', 27)
+    selectCategoriesFNC(event, 'Vehicles', 28)
+    selectCategoriesFNC(event, 'Entertainment: Comics', 29)
+    selectCategoriesFNC(event, 'Science: Gadgets', 30)
+    selectCategoriesFNC(event, 'Entertainment: Japanese Anime & Manga', 31)
+    selectCategoriesFNC(event, 'Entertainment: Cartoons & Animations', 32)
+  }
+
+  // Changing Screens  
+  function goMenuScreen() {
+    setIsGameOver(true);
+    setIsGameOn(false);
   }
 
   function selectionScreen() {
@@ -251,82 +316,22 @@ export default function App() {
 
   function startGameScreen() {
     console.clear()
-    setIsGameOn(prevSelection => !prevSelection)
-    // alert(isSelection)
-  }
-
-  function selectCategories(event, categoriesName, categoriesIndex) {
-    if (event.target.value === categoriesName) {
-      console.log(`${event.target.value} it is`)
-      setCategories(prevCategories => prevCategories = categoriesIndex)
-    }
-  }
-
-  function selectDifficulty(event, difficultyName) {
-    if (event.target.value === difficultyName) {
-      console.log(`${event.target.value} it is`)
-      setDifficulty(difficultyName)
-    }
-  }
-
-  function selectNumberOfQuestions(event, questionName, categoriesIndex) {
-    if (event.target.value === questionName) {
-      console.log(`${event.target.value} it is`)
-      setNumberOfQuestion(prevNumberOfQuestion => prevNumberOfQuestion = categoriesIndex)
-    }
+    setIsGameOn(true)
   }
 
 
-  function sectionScreenCategoriesSelected(event) {
-    selectCategories(event, 'General Knowledge', 9)
-    selectCategories(event, 'Entertainment:Books', 10)
-    selectCategories(event, 'Entertainment:Film', 11)
-    selectCategories(event, 'Entertainment:Music', 12)
-    selectCategories(event, 'Entertainment:Musicals & Theatres', 13)
-    selectCategories(event, 'Entertainment:Television', 14)
-    selectCategories(event, 'Entertainment:Video Game', 15)
-    selectCategories(event, 'Entertainment:Board Game', 16)
-    selectCategories(event, 'Science & Nature', 17)
-    selectCategories(event, 'Science: Computers', 18)
-    selectCategories(event, 'Science: Mathematics', 19)
-    selectCategories(event, 'Mythology', 20)
-    selectCategories(event, 'Sports', 21)
-    selectCategories(event, 'Geography', 22)
-    selectCategories(event, 'History', 23)
-    selectCategories(event, 'Politics', 24)
-    selectCategories(event, 'Art', 25)
-    selectCategories(event, 'Celebrities', 26)
-    selectCategories(event, 'Animals', 27)
-    selectCategories(event, 'Vehicles', 28)
-    selectCategories(event, 'Entertainment: Comics', 29)
-    selectCategories(event, 'Science: Gadgets', 30)
-    selectCategories(event, 'Entertainment: Japanese Anime & Manga', 31)
-    selectCategories(event, 'Entertainment: Cartoons & Animations', 32)
-  }
+  // console.log(`------------------------------------------`)
+  // console.log(ApiLoading)
+  console.log(quiz)
+  // console.log(categories)
+  // console.log(score)
+  // console.log(options)
+  // console.log(quiz.length)
+  // console.log(isCheck)
+  // console.log(isCheck[0].isCheckAnswer)
+  // console.log(isGameOver)
+  // console.log(`------------------------------------------`)
 
-  function sectionScreenDifficultySelected(event) {
-    selectDifficulty(event, 'easy')
-    selectDifficulty(event, 'medium')
-    selectDifficulty(event, 'hard')
-  }
-
-  function sectionScreenNumberOfQuestionSelected(event) {
-    selectNumberOfQuestions(event, 'five', 5)
-    selectNumberOfQuestions(event, 'six', 6)
-    selectNumberOfQuestions(event, 'seven', 7)
-    selectNumberOfQuestions(event, 'eight', 8)
-    selectNumberOfQuestions(event, 'nine', 9)
-    selectNumberOfQuestions(event, 'ten', 10)
-  }
-
-  function goMenu() {
-    setIsGameOver(true);
-    setIsGameOn(false);
-    setApiLoading(false);
-  }
-
-  console.log(`-----------------------------------!!!!!----`)
-  console.log(isRestart)
 
   return ApiLoading === false
     ?
@@ -337,31 +342,30 @@ export default function App() {
     </div >
     :
     <div className="App">
-      {isGameOn && <div onClick={goMenu} className='menu'>Menu</div>}
+      {isGameOn && <div onClick={goMenuScreen} className='menu'>Menu</div>}
       {isGameOn &&
-        <div className='h2-Name'>
-          <h2 >Categories - {categoriesHeadingCondition} </h2>
+        <div className='userSelected-type'>
+          <h2>Categories - {categoriesHeadingCondition} </h2>
           <hr />
         </div>
       }
-      {
-        !isGameOn &&
+      {!isGameOn &&
         <Menu
           selectionScreenUI={() => selectionScreen()}
           isGameOn={isSelectionScreenOn}
           startGameUI={() => startGameScreen()}
-          onClickCategories={() => sectionScreenCategoriesSelected(event)}
-          onClickDifficulty={() => sectionScreenDifficultySelected(event)}
-          onClickNumberOfQuestion={() => sectionScreenNumberOfQuestionSelected(event)}
+          onClickCategories={() => selectCategories(event)}
+          onClickDifficulty={() => selectDifficulty(event)}
+          onClickNumberOfQuestion={() => selectNumberOfQuestions(event)}
         />
       }
-      {isGameOn && gameMenu}
+      {isGameOn && game}
       {isGameOn && checkAnswer}
-      {/* {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>You Scored {score} /  {quiz.length} </h2>} */}
-      {<h2 className='scoreUI'>You Scored {score} / {quiz.length} </h2>}
+      {score === quiz.length && isCheck[0].isCheckAnswer && <Confetti />}
+      {isCheck[0].isCheckAnswer && <h2 className='scoreUI'>{ } You Scored {score} /  {quiz.length} </h2>}
+      {/* {<h2 className='scoreUI'>You Scored {score} / {quiz.length} </h2>} */}
     </div>
 }
-
 
       // }
 

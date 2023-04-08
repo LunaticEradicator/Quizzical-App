@@ -6,9 +6,6 @@ import wrongAnswerIcon from '../assets/wrong.png'
 
 
 export default function Game(props) {
-    // console.clear()
-
-    const OptionImg = props.selectedOption === props.correct_answer ? correctAnswerIcon : wrongAnswerIcon // display icon for wrong or correct answer 
     var decodeEntities = (function () {
         // this prevents any overhead from creating the object each time
         var element = document.createElement('div');
@@ -32,25 +29,25 @@ export default function Game(props) {
     const incorrectAnswer = props.incorrect_answers; // decodeEntities won't work on object
     const correctAnswer = decodeEntities(props.correct_answer);
     const selectedOption = decodeEntities(props.selectedOption);
-
     // to convert incorrect into string [decodeEntities Function will only work on strings]
     const incorrectOptionOne = decodeEntities(incorrectAnswer[0]);
     const incorrectOptionTwo = decodeEntities(incorrectAnswer[1]);
     const incorrectOptionThree = decodeEntities(incorrectAnswer[2]);
 
+    const OptionImg = selectedOption === correctAnswer ? correctAnswerIcon : wrongAnswerIcon // display icon for wrong or correct answer 
     let allOptions = [correctAnswer, incorrectOptionOne, incorrectOptionTwo, incorrectOptionThree];
     const [option, setOption] = useState(allOptions)
 
-    console.log(`------------------------------------------`)
+    // console.log(`------------------------------------------`)
     console.log(props.correct_answer)
-    console.log(decodeEntities(props.correct_answer))
-    console.log(props.selectedOption)
+    // console.log(decodeEntities(props.correct_answer))
+    // console.log(props.selectedOption)
     // console.log(correctAnswer)
     // console.log(props.selectedOption)
     // console.log(selectedOption)
     // // console.log(props.incorrect_answers)
     // // console.log(typeof (incorrectOne))
-    console.log(`------------------------------------------`)
+    // console.log(`------------------------------------------`)
 
     function selectionStyle(onValue) {
         const styles = {
@@ -96,12 +93,12 @@ export default function Game(props) {
 
     return (
         <div className="game">
-            <div className="gameQuestion">
-                <h3>{decodeEntities(props.question)}</h3>
+            <div className="game-Question-div">
+                <h3 className='game-Question'>{decodeEntities(props.question)}</h3>
                 {props.isCheck && <div className='gameImage'><img src={OptionImg} alt="correct" /></div>}
             </div>
-            <div className='gameOptionCheck'>
-                <ul>
+            <div className='game-Option-div'>
+                <ul className='game-All-Options'>
 
                     {/* dynamic styles according to the answer selection */}
                     {/* onClick Functionality of each option [Unified state] */}
