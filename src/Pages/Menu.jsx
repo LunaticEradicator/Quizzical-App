@@ -19,55 +19,55 @@ export default function Menu(props) {
                     <div className='selectionMenu'>
                         <div className='selectionMenu-numberOfQuestion'>
                             <div className='selectionMenu-numberOfQuestion-buttons'>
-                                <select onClick={props.onClickNumberOfQuestion} name="numberOfQuestion" id="numberOfQuestion">
-                                    <option selected >Number of question</option>
-                                    <option value="five">5</option>
-                                    <option value="six">6</option>
-                                    <option value="seven">7</option>
-                                    <option value="eight">8</option>
-                                    <option value="nine">9</option>
-                                    <option value="ten">10</option>
+                                <select className="select-style" onChange={props.onClickNumberOfQuestion} name="numberOfQuestion" id="numberOfQuestion">
+                                    <option selected disabled>Number of question</option>
+                                    <option className="option-style" value="five">5</option>
+                                    <option className="option-style" value="six">6</option>
+                                    <option className="option-style" value="seven">7</option>
+                                    <option className="option-style" value="eight">8</option>
+                                    <option className="option-style" value="nine">9</option>
+                                    <option className="option-style" value="ten">10</option>
                                 </select>
                             </div>
                         </div>
                         <div className='selectionMenu-categories'>
                             <div className="selectionMenu-categories-buttons">
-                                <select onClick={props.onClickCategories} name="categories" id="categories">
-                                    <option selected >Select Categories</option>
-                                    <option value="General Knowledge">General Knowledge</option>
-                                    <option value="Entertainment:Books">Entertainment:Books</option>
-                                    <option value="Entertainment:Film">Entertainment:Film</option>
-                                    <option value="Entertainment:Music">Entertainment:Music</option>
-                                    <option value="Entertainment:Musicals & Theatres">Entertainment:Musicals & Theatres</option>
-                                    <option value="Entertainment:Television">Entertainment:Television</option>
-                                    <option value="Entertainment:Video Game">Entertainment:Video Game</option>
-                                    <option value="Entertainment:Board Game">Entertainment:Board Game</option>
-                                    <option value="Science & Nature">Science & Nature</option>
-                                    <option value="Science: Computers">Science: Computers</option>
-                                    <option value="Science: Mathematics">Science: Mathematics</option>
-                                    <option value="Mythology">Mythology</option>
-                                    <option value="Sports">Sports</option>
-                                    <option value="Geography">Geography</option>
-                                    <option value="History">History</option>
-                                    <option value="Politics">Politics</option>
-                                    <option value="Art">Art</option>
-                                    <option value="Celebrities">Celebrities</option>
-                                    <option value="Animals">Animals</option>
-                                    <option value="Vehicles">Vehicles</option>
-                                    <option value="Entertainment: Comics">Entertainment: Comics</option>
-                                    <option value="Science: Gadgets">Science: Gadgets</option>
-                                    <option value="Entertainment: Japanese Anime & Manga">Entertainment: Japanese Anime & Manga</option>
-                                    <option value="Entertainment: Cartoons & Animations">Entertainment: Cartoons & Animations</option>
+                                <select className="select-style" onChange={props.onClickCategories} name="categories" id="categories">
+                                    <option selected disabled>Select Categories</option>
+                                    <option className="option-style" value="General Knowledge">General Knowledge</option>
+                                    <option className="option-style" value="Entertainment:Books">Entertainment:Books</option>
+                                    <option className="option-style" value="Entertainment:Film">Entertainment:Film</option>
+                                    <option className="option-style" value="Entertainment:Music">Entertainment:Music</option>
+                                    <option className="option-style" value="Entertainment:Musicals & Theatres">Entertainment:Musicals & Theatres</option>
+                                    <option className="option-style" value="Entertainment:Television">Entertainment:Television</option>
+                                    <option className="option-style" value="Entertainment:Video Game">Entertainment:Video Game</option>
+                                    <option className="option-style" value="Entertainment:Board Game">Entertainment:Board Game</option>
+                                    <option className="option-style" value="Science & Nature">Science & Nature</option>
+                                    <option className="option-style" value="Science: Computers">Science: Computers</option>
+                                    <option className="option-style" value="Science: Mathematics">Science: Mathematics</option>
+                                    <option className="option-style" value="Mythology">Mythology</option>
+                                    <option className="option-style" value="Sports">Sports</option>
+                                    <option className="option-style" value="Geography">Geography</option>
+                                    <option className="option-style" value="History">History</option>
+                                    <option className="option-style" value="Politics">Politics</option>
+                                    <option className="option-style" value="Art">Art</option>
+                                    <option className="option-style" value="Celebrities">Celebrities</option>
+                                    <option className="option-style" value="Animals">Animals</option>
+                                    <option className="option-style" value="Vehicles">Vehicles</option>
+                                    <option className="option-style" value="Entertainment: Comics">Entertainment: Comics</option>
+                                    <option className="option-style" value="Science: Gadgets">Science: Gadgets</option>
+                                    <option className="option-style" value="Entertainment: Japanese Anime & Manga">Entertainment: Japanese Anime & Manga</option>
+                                    <option className="option-style" value="Entertainment: Cartoons & Animations">Entertainment: Cartoons & Animations</option>
                                 </select>
                             </div>
                         </div>
                         <div className='selectionMenu-difficulty'>
                             <div className='selectionMenu-difficulty-buttons'>
-                                <select onClick={props.onClickDifficulty} name="difficulty" id="difficulty">
-                                    <option selected >Select Difficulty</option>
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
+                                <select className="select-style" onChange={props.onClickDifficulty} name="difficulty" id="difficulty">
+                                    <option selected disabled >Select Difficulty</option>
+                                    <option className="option-style" value="easy">Easy</option>
+                                    <option className="option-style" value="medium">Medium</option>
+                                    <option className="option-style" value="hard">Hard</option>
                                 </select>
                             </div>
                         </div>

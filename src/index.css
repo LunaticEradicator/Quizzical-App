@@ -134,7 +134,17 @@ hr {
   justify-content: center;
 }
 
-select {
+.select-style {
+  background-color: black;
+  color: white;
+  font-size: 1.2rem;
+  padding: 5px;
+  outline: none;
+  border: 1px solid var(--font-color);
+  cursor: pointer;
+}
+
+.option-style {
   background-color: black;
   color: white;
   font-size: 1.2rem;
@@ -143,14 +153,6 @@ select {
   border: 1px solid var(--font-color);
 }
 
-option {
-  background-color: black;
-  color: white;
-  font-size: 1.2rem;
-  padding: 5px;
-  outline: none;
-  border: 1px solid var(--font-color);
-}
 
 .selectionMenu-confirm-btn-div {
   text-align: center;
