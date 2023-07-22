@@ -1,12 +1,37 @@
-import { useEffect, useState } from "react";
-import React from "react";
-
+import { useState } from "react";
 import correctAnswerIcon from "../assets/correct.png";
 import wrongAnswerIcon from "../assets/wrong.png";
-
 import useDecodeEntities from "../hooks/useDecodeEntities";
 
-export default function Questions(props) {
+interface PostProps {
+  category: string;
+  correct_answer: string;
+  difficulty: string;
+  incorrect_answers: string[];
+  isOptionFour: boolean;
+  isOptionOne: boolean;
+  isOptionThree: boolean;
+  isOptionTwo: boolean;
+  optionIndex: number[];
+  optionOne: any;
+  optionTwo: any;
+  optionFour: any;
+  optionThree: any;
+  question: string;
+  questionId: number;
+  selectedOption: string;
+  type: string;
+  isCheck: boolean[];
+  toggle: (
+    optionId: string,
+    event: EventListenerOrEventListenerObject,
+    questionId: number
+  ) => null;
+}
+
+export default function Questions(props: PostProps) {
+  console.log("----------------------------------------");
+  console.log(typeof props.isOptionOne);
   // var decodeEntities = (function () {
   //     // this prevents any overhead from creating the object each time
   //     var element = document.createElement('div');
@@ -45,8 +70,8 @@ export default function Questions(props) {
   ];
   const [option, setOption] = useState(allOptions);
 
-  // console.log(`------------------------------------------`)
   console.log(props.correct_answer);
+  // console.log(`------------------------------------------`)
   // console.log(DecodeEntities(props.correct_answer))
   // console.log(props.selectedOption)
   // console.log(correctAnswer)
@@ -56,7 +81,7 @@ export default function Questions(props) {
   // // console.log(typeof (incorrectOne))
   // console.log(`------------------------------------------`)
 
-  function selectionStyle(onValue) {
+  function selectionStyle(onValue: boolean | null) {
     const styles = {
       backgroundColor: onValue ? "#137262" : "",
       border: onValue ? "none" : "1px solid aquamarine",
@@ -64,14 +89,14 @@ export default function Questions(props) {
     return styles;
   }
 
-  function correctAnswerStyle(onValue) {
+  function correctAnswerStyle(onValue: boolean | null) {
     const styles = {
       backgroundColor: onValue ? "rgb(80, 146, 80)" : "",
     };
     return styles;
   }
 
-  function wrongAnswerStyle(onValue) {
+  function wrongAnswerStyle(onValue: boolean | null) {
     const styles = {
       backgroundColor: onValue ? "rgb(145, 57, 57)" : "",
       opacity: 0.6,
@@ -82,7 +107,7 @@ export default function Questions(props) {
     backgroundColor: "rgb(80, 146, 80)",
   };
 
-  function styleConditions(onValue, index) {
+  function styleConditions(onValue: boolean | null, index: number) {
     //if onValue is true
     if (
       option[index] === correctAnswer &&

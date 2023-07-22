@@ -1,19 +1,43 @@
-export default function SelectionMenu(props) {
-  function selectNumberOfQuestionsFNC(event, questionName, categoriesIndex) {
+// interface selectedOptionsType {
+//   selectedQuestion: string;
+//   selectedCategories: string;
+//   selectedDifficulty: string;
+// }
+
+import React from "react";
+
+interface SelectionProps {
+  selectionScreenUI: () => void;
+  isGameOn: boolean;
+  startGameUI: () => void;
+  setCategories?: (val: unknown) => void;
+  setDifficulty?: (val: unknown) => void;
+  setNumberOfQuestion: (val: unknown) => void;
+  setUserSelection: (val: unknown) => void;
+}
+
+export default function SelectionMenu(props: SelectionProps) {
+  function selectNumberOfQuestionsFNC(
+    event: React.ChangeEvent<HTMLInputElement>,
+    questionName: string,
+    categoriesIndex: number
+  ) {
     // User Selection ,Number of Questions, Difficulty, Categories ]
     if (event.target.value === questionName) {
-      props.setSelectedOption((prevSelectedOption) =>
+      //  Display Header
+      props.setUserSelection((prevSelectedOption: object[]) =>
         prevSelectedOption.map((sike) => {
           return { ...sike, selectedQuestion: questionName };
         })
       );
       console.log(`${event.target.value} it is`);
       props.setNumberOfQuestion(
-        (prevNumberOfQuestion) => (prevNumberOfQuestion = categoriesIndex)
+        (prevNumberOfQuestion: string) =>
+          (prevNumberOfQuestion = categoriesIndex)
       );
     }
   }
-  function selectNumberOfQuestions(event) {
+  function selectNumberOfQuestions(event: React.ChangeEvent<HTMLInputElement>) {
     selectNumberOfQuestionsFNC(event, "five", 5);
     selectNumberOfQuestionsFNC(event, "six", 6);
     selectNumberOfQuestionsFNC(event, "seven", 7);
@@ -21,20 +45,26 @@ export default function SelectionMenu(props) {
     selectNumberOfQuestionsFNC(event, "nine", 9);
     selectNumberOfQuestionsFNC(event, "ten", 10);
   }
-  function selectCategoriesFNC(event, categoriesName, categoriesIndex) {
+
+  function selectCategoriesFNC(
+    event: React.ChangeEvent<HTMLInputElement>,
+    categoriesName: string,
+    categoriesIndex: number
+  ) {
     if (event.target.value === categoriesName) {
-      props.setSelectedOption((prevSelectedOption) =>
+      //  Display Header
+      props.setUserSelection((prevSelectedOption: object[]) =>
         prevSelectedOption.map((sike) => {
           return { ...sike, selectedCategories: categoriesName };
         })
       );
       console.log(`${event.target.value} it is`);
-      props.setCategories(
-        (prevCategories) => (prevCategories = categoriesIndex)
+      props.setCategories?.(
+        (prevCategories: string) => (prevCategories = categoriesIndex)
       );
     }
   }
-  function selectCategories(event) {
+  function selectCategories(event: React.ChangeEvent<HTMLInputElement>) {
     selectCategoriesFNC(event, "General Knowledge", 9);
     selectCategoriesFNC(event, "Entertainment:Books", 10);
     selectCategoriesFNC(event, "Entertainment:Film", 11);
@@ -60,19 +90,23 @@ export default function SelectionMenu(props) {
     selectCategoriesFNC(event, "Entertainment: Japanese Anime & Manga", 31);
     selectCategoriesFNC(event, "Entertainment: Cartoons & Animations", 32);
   }
-  function selectDifficultyFNC(event, difficultyName) {
+
+  function selectDifficultyFNC(
+    event: React.ChangeEvent<HTMLInputElement>,
+    difficultyName: string
+  ) {
     if (event.target.value === difficultyName) {
       console.log(`${event.target.value} it is`);
-      props.setSelectedOption((prevSelectedOption) =>
+      //  Display Header
+      props.setUserSelection((prevSelectedOption: object[]) =>
         prevSelectedOption.map((sike) => {
           return { ...sike, selectedDifficulty: difficultyName };
         })
       );
-      props.setDifficulty(difficultyName);
+      props.setDifficulty?.(difficultyName);
     }
   }
-
-  function selectDifficulty(event) {
+  function selectDifficulty(event: React.ChangeEvent<HTMLInputElement>) {
     selectDifficultyFNC(event, "easy");
     selectDifficultyFNC(event, "medium");
     selectDifficultyFNC(event, "hard");
@@ -101,7 +135,7 @@ export default function SelectionMenu(props) {
               <div className="selectionMenu-numberOfQuestion-buttons">
                 <select
                   className="select-style"
-                  onChange={selectNumberOfQuestions}
+                  onChange={() => selectNumberOfQuestions(event)}
                   name="numberOfQuestion"
                   id="numberOfQuestion"
                 >
@@ -133,7 +167,7 @@ export default function SelectionMenu(props) {
               <div className="selectionMenu-categories-buttons">
                 <select
                   className="select-style"
-                  onChange={selectCategories}
+                  onChange={() => selectCategories(event)}
                   name="categories"
                   id="categories"
                 >
@@ -200,9 +234,9 @@ export default function SelectionMenu(props) {
                   <option className="option-style" value="Politics">
                     Politics
                   </option>
-                  <option className="option-style" value="Art">
+                  {/* <option className="option-style" value="Art">
                     Art
-                  </option>
+                  </option> */}
                   <option className="option-style" value="Celebrities">
                     Celebrities
                   </option>
@@ -240,7 +274,7 @@ export default function SelectionMenu(props) {
               <div className="selectionMenu-difficulty-buttons">
                 <select
                   className="select-style"
-                  onChange={selectDifficulty}
+                  onChange={() => selectDifficulty(event)}
                   name="difficulty"
                   id="difficulty"
                 >

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Itim&family=Josefin+Sans&family=Montserrat&family=Quicksand&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Itim&family=Josefin+Sans&family=Montserrat&family=Quicksand&display=swap");
 
 :root {
   --hover-Color: rgb(216, 215, 215);
@@ -7,16 +7,26 @@
 
 * {
   box-sizing: border-box;
-  font-family: 'Itim', cursive;
-  font-family: 'Josefin Sans', sans-serif;
-  font-family: 'Montserrat', sans-serif;
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Itim", cursive;
+  font-family: "Josefin Sans", sans-serif;
+  font-family: "Montserrat", sans-serif;
+  font-family: "Quicksand", sans-serif;
 }
 
 body {
   margin: 0;
   background-color: rgb(31, 30, 30);
   color: white;
+}
+
+img {
+  max-width: 40px;
+}
+
+mark {
+  background-color: transparent;
+  color: rgb(255, 255, 255);
+  border-bottom: 1px solid var(--font-color);
 }
 
 .loadingApi {
@@ -27,15 +37,6 @@ body {
   font-size: 4rem;
   color: var(--font-color);
 }
-
-img {
-  max-width: 40px;
-}
-
-#root {
-  min-height: 100vh;
-}
-
 
 h1 {
   color: var(--font-color);
@@ -50,6 +51,19 @@ h2 {
   margin: 0;
 }
 
+hr {
+  background-color: azure;
+  opacity: 0.1;
+}
+
+#root {
+  min-height: 100vh;
+  animation: transitionIn 0.75s;
+}
+
+.sike {
+  animation: transitionIn 0.75s;
+}
 .userSelected-type {
   margin: auto 30px;
 }
@@ -60,27 +74,21 @@ h2 {
   font-size: 2rem;
 }
 
-hr {
-  background-color: azure;
-  opacity: 0.1;
-}
-
 .intro {
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 100vh;
   margin: auto 50px;
-}
-
-.intro-heading {
-  text-align: center;
-}
-
-.intro-paragraph {
-  font-size: 2rem;
-  margin: 0;
-  margin-bottom: 20px;
+  animation: transitionIn 0.75s;
+  &-heading {
+    text-align: center;
+  }
+  &-paragraph {
+    font-size: 2rem;
+    margin: 0;
+    margin-bottom: 20px;
+  }
 }
 
 .intro-button-div {
@@ -103,26 +111,25 @@ hr {
 
 /* button style */
 
-.selectionMenu-confirm-btn {
-  all: unset;
-  font-size: calc(1rem + 1vw);
-  border-radius: 10px;
-  outline: 1px solid var(--font-color);
-  padding: 10px;
-  margin: 10px;
-  background-color: rgb(61, 61, 61);
-  text-align: center;
-  cursor: pointer;
-  background-color: black;
-  color: white;
-  padding: 10px 20px;
-  transition: 0.5s;
-}
-
-
 .selectionMenu {
   display: grid;
   gap: 20px;
+  animation: transitionIn 0.75s;
+  &-confirm-btn {
+    all: unset;
+    font-size: calc(1rem + 1vw);
+    border-radius: 10px;
+    outline: 1px solid var(--font-color);
+    padding: 10px;
+    margin: 10px;
+    background-color: rgb(61, 61, 61);
+    text-align: center;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    transition: 0.5s;
+  }
 }
 
 .selectionMenu-numberOfQuestion-buttons,
@@ -153,7 +160,6 @@ hr {
   border: 1px solid var(--font-color);
 }
 
-
 .selectionMenu-confirm-btn-div {
   text-align: center;
 }
@@ -162,12 +168,6 @@ hr {
   text-align: center;
   margin: 0;
   font-weight: bold;
-}
-
-mark {
-  background-color: transparent;
-  color: rgb(255, 255, 255);
-  border-bottom: 1px solid var(--font-color);
 }
 
 .game {
@@ -186,7 +186,6 @@ mark {
   justify-content: center;
   align-items: center;
 }
-
 
 .game-All-Options {
   list-style: none;
@@ -235,7 +234,6 @@ mark {
   transition: 0.5s;
 }
 
-
 .game-option:hover {
   background-color: var(--hover-Color);
   cursor: pointer;
@@ -260,4 +258,16 @@ mark {
   cursor: pointer;
   color: black;
   transform: scale(0.9);
+}
+
+@keyframes transitionIn {
+  from {
+    opacity: 0;
+    transform: rotateX(-10deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotateX(0);
+  }
 }

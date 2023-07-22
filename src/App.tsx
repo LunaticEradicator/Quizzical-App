@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import SelectionMenu from "./Components/SelectionMenu";
 import Confetti from "react-confetti";
@@ -18,7 +17,8 @@ import axios from "axios";
 export default function App() {
   let score = 0; // Will only update if ApiLoading is true
 
-  const [selectedOption, setSelectedOption] = useState([
+  // For Showing the Selected Header
+  const [userSelection, setUserSelection] = useState<any>([
     {
       selectedQuestion: "Random",
       selectedCategories: "Random",
@@ -26,20 +26,12 @@ export default function App() {
     },
   ]);
 
-  let questionIdIncrement = 1;
   const [ApiLoading, setApiLoading] = useState(false);
-  const [quiz, setQuiz] = useState([]);
+  const [quiz, setQuiz] = useState(Array());
 
-  const [categories, setCategories] = useState("");
-  const [difficulties, setDifficulty] = useState("");
-  const [numberOfQuestion, setNumberOfQuestion] = useState(5);
-
-  const [isSelectionScreenOn, setIsSelectionScreenOn] = useState(false);
-  const [isGameOn, setIsGameOn] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
-
-  const [isCheck, setIsCheck] = useState([{ isCheckAnswer: false }]);
-
+  const [categories, setCategories] = useState<unknown>("");
+  const [difficulties, setDifficulty] = useState<unknown>("");
+  const [numberOfQuestion, setNumberOfQuestion] = useState<unknown>(5);
   const [options, setOptions] = useState([
     //storing each selected option to an array to check score
     {
@@ -56,9 +48,13 @@ export default function App() {
     },
   ]);
 
+  const [isSelectionScreenOn, setIsSelectionScreenOn] = useState(false);
+  const [isGameOn, setIsGameOn] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isCheck, setIsCheck] = useState([{ isCheckAnswer: false }]);
+
   function restartGame() {
     setIsGameOver(false);
-    questionIdIncrement = 1;
     score = 0;
     setIsCheck((prevIsCheck) =>
       prevIsCheck.map((item) => {
@@ -71,18 +67,20 @@ export default function App() {
     restartGame();
     if (!isGameOver) {
       // to stop multiple api rendering when pressing 'try again'
+      // try {
       async function fetchAPI() {
-        console.clear();
-        console.log("Inside use Effect --");
         // https://opentdb.com/api.php?amount=10&category=9&difficulty=hard&type=multiple
         const response = await axios.get(
+          // "https://opentdb.com/api.php?amount=10&category=25&difficulty=easy&type=multiple"
           `https://opentdb.com/api.php?amount=${numberOfQuestion}&category=${categories}&difficulty=${difficulties}&type=multiple`
         );
         const data = await response.data;
-        console.log(response);
+        // console.clear();
+        console.log("Inside use Effect --");
+        console.log(data);
         setQuiz(data.results); // [shows an array of five question]
         setQuiz((prevApiCall) =>
-          prevApiCall.map((item) => {
+          prevApiCall.map((item, index) => {
             // map through each of the quiz and add new data to it [isOptionOne,optionOne,questionId]
             return {
               ...item,
@@ -94,14 +92,18 @@ export default function App() {
               optionTwo: nanoid(),
               optionThree: nanoid(),
               optionFour: nanoid(),
-              questionId: questionIdIncrement++,
+              questionId: index + 1,
               selectedOption: "",
               optionIndex: useRandomUnique(4, 4), // this gives a each question an array of four unique random number [randomize options]
             };
           })
         );
       }
+      // return data;
       fetchAPI(); // assign all this to a function since we use async await method
+      // } catch (error) {
+      //   console.error(error);
+      // }
     }
   }, [isGameOver, categories, difficulties, numberOfQuestion]); // only call API when this changes
 
@@ -149,8 +151,12 @@ export default function App() {
     }
   }
 
-  function toggleAndSaveOption(optionId, event, questionId) {
-    console.clear();
+  function toggleAndSaveOption(
+    optionId: number,
+    event: React.ChangeEvent<HTMLInputElement>,
+    questionId: number
+  ) {
+    // console.clear();
 
     if (isCheck[0].isCheckAnswer === false) {
       //only select if the player haven't checked the answer
@@ -233,14 +239,16 @@ export default function App() {
     }
   }
 
-  function checkScore(optionNumber, index) {
+  function checkScore(optionNumber: string, index: number) {
     // each question has a score of one
+    // console.log(options[0]);
+    console.log(useDecodeEntities(quiz[index].correct_answer));
     if (optionNumber === useDecodeEntities(quiz[index].correct_answer)) {
       score++;
     }
   }
   // Only checkAnswer, if options for each question are selected
-  function isCheckAnswer(event) {
+  function isCheckAnswer(event: React.ChangeEvent<HTMLInputElement>) {
     if (quiz.every((eachElement) => eachElement.selectedOption !== "")) {
       setIsCheck((prevQuestionArray) =>
         prevQuestionArray.map((item) => {
@@ -264,12 +272,12 @@ export default function App() {
   }
 
   function selectionScreen() {
-    console.clear();
+    // console.clear();
     setIsSelectionScreenOn((prevIsGameOn) => !prevIsGameOn);
   }
 
   function startGameScreen() {
-    console.clear();
+    // console.clear();
     setIsGameOn(true);
   }
 
@@ -321,18 +329,18 @@ export default function App() {
           setCategories={setCategories}
           setDifficulty={setDifficulty}
           setNumberOfQuestion={setNumberOfQuestion}
-          setSelectedOption={setSelectedOption}
+          setUserSelection={setUserSelection}
         />
       )}
       {isGameOn && (
-        <>
+        <div className="sike">
           <Menu goMenuScreen={() => goMenuScreen()} />
-          <Header selectedOption={selectedOption} />
+          <Header userSelection={userSelection} />
           {renderQuestions}
           {renderCheckAnswer}
           {renderConfetti()}
           {isCheck[0].isCheckAnswer && <Score score={score} quiz={quiz} />}
-        </>
+        </div>
       )}
       {/* {<h2 className='scoreUI'>You Scored {score} / {quiz.length} </h2>} */}
     </div>
